@@ -1,4 +1,4 @@
-mutetab
+MuteTab
 =======
 
 MuteTab Chrome extension
