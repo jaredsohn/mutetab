@@ -1,0 +1,11 @@
+{
+  "web_accessible_resources": [
+	  "src/js/favicon.png"
+  ],
+  "icons" : {
+		"16" : "src/js/favicon.png",
+    "48" : "src/js//favicon.png",
+    "128" : "src/js/favicon.png"
+  },
+  "options_page": "src/js/options.html"
+}

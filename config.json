@@ -1,0 +1,65 @@
+{
+	"config_version": "2",
+	"name": "MuteTab",
+	"author": "Jared Sohn",
+	"version": "2.1",
+	"platform_version": "v1.4",
+	"description": "Helps narrow down which tab that sound is coming from, browser-wide granular sound management",
+	"modules": {
+		"button": {
+			"default_popup": "js/popup.html",
+			"default_title": "MuteTab",
+			"default_icon": "js/favicon.png"
+		},
+		"activations": [
+		{ 
+			"run_at": "start",
+			"patterns": ["http://*/*", "https://*/*"],
+	        "scripts": [
+				"js/lib/jquery.js",
+				"js/shared/core.js",
+				"js/shared/operationssupported.js", 
+		                "js/lib/elementclassutil.js",
+				"js/contentscript/operation.js",
+				"js/contentscript/objectembed.js",
+		                "js/contentscript/messaging_contentscript.js",
+				"js/contentscript/detectaudiosources.js",
+				"js/contentscript/contentscript.js",
+		                "js/contentscript/init.js"],
+	        "styles": [],
+	        "all_frames": true
+		}],
+		"background": {
+			"files": [
+				"js/lib/deepcopy.js", 
+				"js/shared/analytics.js", 
+				"js/lib/ga.js", 
+				"js/shared/core.js", 
+				"js/lib/async.min.js", 
+				"js/background/injectjs.js",
+				"js/options.js", 
+				"js/background/messaging.js", 
+				"js/background/displayutil.js", 
+				"js/background/contextmenus.js", 
+				"js/shared/operationssupported.js", 
+				"js/background/stats.js",
+				"js/background/background.js"
+			]
+		},
+		"logging": {
+			"level": "DEBUG"
+		},
+		"contact": true,
+		"file": true,
+		"is": true,
+		"message": true,
+		"media": true,
+		"prefs": true,
+		"tabs": true,
+		"request": {
+			"permissions": ["http://*/*", "contextMenus", "chrome://favicon/", "https://*/*"]
+		},
+		"tools": true,
+		"reload": true
+	}
+}

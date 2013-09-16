@@ -1,0 +1,108 @@
+/*
+   MuteTab browser extension CSS
+
+   Images can be found (and replaced) in popup/audiosourcetypes, popup/operations, popup/states 
+
+   If you customize this, make sure that you make a backup of your changes.  When the extension is updated, you will need to redo them.
+ */
+
+/*html {height: 100%;}*/
+
+body {
+/*  height: 100% */
+  margin-left:10px;
+  margin-top:10px;
+  margin-bottom:10px;
+  margin-right:0px;
+  white-space:nowrap; 
+//  background-image:url('popup/bgimage/clouds.jpg'); /* You can find tileable background images at http://subtlepatterns.com/ */
+
+//  background-repeat:repeat;
+  background-color:white;
+
+  font-size:12px; 
+
+  overflow-x: hidden;
+  min-width:475px;
+}
+
+/*
+#wrap {min-height: 100%;}
+
+#main {overflow:auto;
+	padding-bottom: 25px;}  
+
+#footer {position: relative;
+	margin-top: -25px;
+	height: 25px;
+	clear:both;} 
+*/
+
+.mutetabtoplinks {
+   font-size:12px;
+}
+
+.mutetabbottomlinks {
+   font-size:12px;
+}
+
+.tabType {
+   font-size:14px;
+   color:green;
+}
+
+.tabdesc, .tabdescblocked {
+   color:black;
+   text-overflow: ellipsis;
+   max-width: 350px;
+   overflow: hidden; 
+   white-space: nowrap;
+   text-align: left; 
+   float: left;
+}
+
+.audiosourcedesc, .audiosourcedescblocked  { 
+   color:black;
+   text-overflow: ellipsis;
+   max-width: 400px;
+   overflow: hidden; 
+   white-space: nowrap;
+}
+
+
+.tabdescblocked {
+   color:grey;
+}
+
+.audiosourcedescblocked {
+   color:grey;
+}
+
+
+.favicon {
+  width:16px;
+  height:16px;
+}
+
+.audiosourcetypeicon {
+  width:12px;
+  height:12px;
+}
+
+.tabexpandcollapseicon {
+  width:8px;
+  height:8px;
+}
+
+.taboperationicon {
+  width:20px;
+  height:20px;
+  vertical-align: top;
+  max-height:20px;
+  max-width:20px;
+}
+
+.audiosourceoperationicon {
+  width:16px;
+  height:16px;
+}
