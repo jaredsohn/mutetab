@@ -12,6 +12,6 @@ http://www.mutetab.com/
 
 2. Download the contents of this repository and place it into OpenForge's src folder.
 
-3. Download [mutetab_build](https://github.com/jaredsohn/mutetab_build) and place the contents into the OpenForge folder.
+3. Download [mutetab_build](https://github.com/jaredsohn/mutetab_build) (will be posted soon) and place the contents into the OpenForge folder.
 
 4. From the OpenForge folder, make 'z' executable and run it to create a new build. (You can find it in development/chrome.)
