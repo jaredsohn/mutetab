@@ -2,7 +2,6 @@ MuteTab
 =======
 
 MuteTab Chrome extension
-
 http://www.mutetab.com/
 
 MuteTab is a Chrome extension that helps you manage the sound coming from tabs in Google Chrome. It helps you to narrow down which tab(s) are making sounds and provides browser-wide management of tab muting (pausing YouTube, HTML5 Video/Audio, and QuickTime and stopping others), including automatically muting all background tabs(*).
