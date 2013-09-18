@@ -15,9 +15,9 @@ People looking to reuse code may find the following pieces of highest interest:
 
 ###Build instructions
 
-1. Download and set up [OpenForge](https://github.com/trigger-corp/browser-extensions).
+1. Clone [OpenForge](https://github.com/trigger-corp/browser-extensions).
 
-2. Download the contents of this repository and place it into OpenForge's src folder.
+2. Clone this repository and place it into the src folder from where you cloned OpenForge.
 
 3. Install [mergejson](https://github.com/jaredsohn/mergejson) to update the manifest with features I don't think are supported by OpenForge and place into the OpenForge folder.
 
@@ -31,4 +31,4 @@ forge-extension build chrome
 python mergejson.py development/chrome/manifest.json src/mutetab_chrome.json development/chrome/manifest.json
 ```
 
-5. You can run it by going to chrome://extensions, checking Developer mode, clicking "Load unpacked extension...", and choosing the development/chrome folder.
+You can run it by going to chrome://extensions, checking Developer mode, clicking "Load unpacked extension...", and choosing the development/chrome folder.
