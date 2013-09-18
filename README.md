@@ -6,6 +6,13 @@ MuteTab is a Chrome extension that helps you manage the sound coming from tabs i
 ###Documentation/download
 http://www.mutetab.com/
 
+###Points of interest
+
+People looking to reuse code may find the following pieces of highest interest:
+
+* contentscript/objectembed.js: Interpret the source of a plug-in to determine which parameters are set or change them.
+* contentscript/messaging_contentscript.js, background/messaging.js: framework for keeping track of data related to open tabs
+
 ###Source setup
 
 1. Download and set up [OpenForge](https://github.com/trigger-corp/browser-extensions).
