@@ -74,7 +74,35 @@ SetDevMode = function()
 // Most migration code removed since it would only affect users who hadn't upgraded in over a year
 MigrateOptions = function()
 {
+
+  var now = new Date().getTime();
+
+  if (null === localStorage.getItem('welcomed'))
+  {
+    localStorage.setItem("welcomed", now);
+
+    chrome.tabs.create({
+        'url': "http://www.mutetab.com/welcome.html"
+    }, function(tab) {
+
+    });
+  }
+
+  forge.prefs.get("welcomed", _onCheckWelcomed, function() { _onCheckedWelcomed(null); });
   forge.prefs.get("install_time", _onCheckedInstall, function() { _onCheckedInstall(null); });
+};
+
+_onCheckWelcomed = function(val)
+{
+  if (val === null)
+  {
+    chrome.tabs.create({
+        'url': "http://www.mutetab.com/welcome.html"
+    }, function(tab) {
+    });
+    var now = new Date().getTime();
+    _savePref("welcomed", now);
+  }
 };
 
 _onCheckedInstall = function(val)
