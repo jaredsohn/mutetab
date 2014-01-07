@@ -15,7 +15,7 @@ People looking to reuse code may find the following pieces of highest interest:
 
 ###Build instructions
 
-1. Clone [OpenForge](https://github.com/trigger-corp/browser-extensions), this repository, and [mergejson](https://github.com/jaredsohn/mergejson) by running the following commands:
+First get the files onto your computer.  Clone [OpenForge](https://github.com/trigger-corp/browser-extensions), this repository, and [mergejson](https://github.com/jaredsohn/mergejson) by running the following commands:
 
 ```
 git clone https://github.com/trigger-corp/browser-extensions mutetab_src
@@ -24,7 +24,7 @@ git clone https://github.com/jaredsohn/mutetab.git src
 git clone https://github.com/jaredsohn/mergejson.git mergejson
 ```
 
-2. Run the following commands (including them in a script is recommended.)
+Then run the following commands (including them in a script is recommended, since you'll do it every time you build.)
 
 ```
 virtualenv --no-site-packages ./python-env
