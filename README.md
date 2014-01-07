@@ -29,9 +29,7 @@ Finally, run the following commands (including them in a script is recommended, 
 
 ```
 source ./python-env/bin/activate
-mkdir development
 rm -rf development/chrome
-mkdir development/chrome
 forge-extension build chrome
 python mergejson/mergejson.py development/chrome/manifest.json src/mutetab_chrome.json development/chrome/manifest.json
 ```
