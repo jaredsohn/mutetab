@@ -27,8 +27,8 @@ InitOptions = function(options) // If defaults change, update manually in option
   // Current (2.0 and later)
   forge.prefs.get("flickerEnabled", function(val) { options.FlickerEnabled = (val !== null) ? val : true; }, function() { options.FlickerEnabled = true; });
   forge.prefs.get("forceScripting", function(val) { options.ForceScripting = (val !== null) ? val : true; }, function() { options.ForceScripting = true; });
-  forge.prefs.get("loggingEnabled", function(val) { options.LoggingEnabled = (val !== null) ? val : true; }, function() { options.LoggingEnabled = true; });
-  forge.prefs.get("msgLoggingEnabled", function(val) { options.MsgLoggingEnabled = (val !== null) ? val : true; }, function() { options.MsgLoggingEnabled = true; });
+  forge.prefs.get("loggingEnabled", function(val) { options.LoggingEnabled = (val !== null) ? val : false; }, function() { options.LoggingEnabled = false; });
+  forge.prefs.get("msgLoggingEnabled", function(val) { options.MsgLoggingEnabled = (val !== null) ? val : false; }, function() { options.MsgLoggingEnabled = false ; });
   forge.prefs.get("analyticsEnabled", function(val) { options.AnalyticsEnabled = (val !== null) ? val : true; }, function() { options.AnalyticsEnabled = true; });
   forge.prefs.get("updateOnPopup", function(val) { options.UpdateOnPopup = (val !== null) ? val : true; }, function() { options.UpdateOnPopup = true; });
   forge.prefs.get("autoStopMode", function(val) { options.AutoStopMode = (val !== null) ? val : false; }, function() { options.AutoStopMode = false; });
