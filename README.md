@@ -17,10 +17,12 @@ People looking to reuse code may find the following pieces of highest interest:
 
 1. Clone [OpenForge](https://github.com/trigger-corp/browser-extensions), this repository, and [mergejson](https://github.com/jaredsohn/mergejson) by running the following commands:
 
+```
 git clone https://github.com/trigger-corp/browser-extensions mutetab_src
 cd mutetab_src
 git clone https://github.com/jaredsohn/mutetab.git src
 git clone https://github.com/jaredsohn/mergejson.git mergejson
+```
 
 2. Run the following commands (including them in a script is recommended.)
 
