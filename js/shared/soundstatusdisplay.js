@@ -19,7 +19,7 @@ function getSoundStatusHtml(displayInfo)
 	output += '<HR>' + GetHtmlForTabInfos("Background tabs (most recent first)", displayInfo.OtherIndividualTabInfos, false, displayInfo.Options);
 //  output += '<HR><div id="manuallyspecified" class="tabType"><b>Manually specified individual tabs</b></div>'; // TODO; only show if there are some; and then don't try to show audiosources
 
-	output += '<HR><div id="caveat" class="tabType"><b>Note: Sounds from blocked popup windows and web audio are undetectable.</b></div>';
+	output += '<HR><div id="caveat" class="tabType"><b>Note: Sounds from blocked popup windows and web audio are undetectable.&nbsp;</b></div>';
 
 	return output;
 }

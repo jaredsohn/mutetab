@@ -10,33 +10,14 @@
 
 body {
 /*  height: 100% */
-  margin-left:10px;
-  margin-top:10px;
-  margin-bottom:10px;
-  margin-right:0px;
+  font-family: sans-serif;
+  margin:10px 0 10px 10px;
   white-space:nowrap; 
-//  background-image:url('popup/bgimage/clouds.jpg'); /* You can find tileable background images at http://subtlepatterns.com/ */
-
-//  background-repeat:repeat;
   background-color:white;
-
   font-size:12px; 
-
   overflow-x: hidden;
   min-width:475px;
 }
-
-/*
-#wrap {min-height: 100%;}
-
-#main {overflow:auto;
-	padding-bottom: 25px;}  
-
-#footer {position: relative;
-	margin-top: -25px;
-	height: 25px;
-	clear:both;} 
-*/
 
 .mutetabtoplinks {
    font-size:12px;
@@ -54,7 +35,7 @@ body {
 .tabdesc, .tabdescblocked {
    color:black;
    text-overflow: ellipsis;
-   max-width: 350px;
+   max-width: 400px;
    overflow: hidden; 
    white-space: nowrap;
    text-align: left; 
@@ -64,20 +45,19 @@ body {
 .audiosourcedesc, .audiosourcedescblocked  { 
    color:black;
    text-overflow: ellipsis;
-   max-width: 400px;
+   max-width: 450px;
    overflow: hidden; 
    white-space: nowrap;
 }
 
 
 .tabdescblocked {
-   color:grey;
+   color:gray;
 }
 
 .audiosourcedescblocked {
-   color:grey;
+   color:gray;
 }
-
 
 .favicon {
   width:16px;
@@ -105,4 +85,23 @@ body {
 .audiosourceoperationicon {
   width:16px;
   height:16px;
+}
+
+.button, .button:link
+{
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 6px;
+    background-color: #36689b;
+    color: #fff;
+    font-size:11px; 
+}
+.button:hover
+{
+    background-color: #6089b4;
+}
+hr
+{
+    clear: both;
 }

@@ -33,10 +33,10 @@ function OnDisplayInfo(displayInfo)
   output += '<div id="wrap>';
   output += '  <div id="header">';
   output += '  <b>Tabs that are possibly making sound</b>';
-  output += '  <div id="toprightmenu" style="text-align: right; width=25%; float: right">';
-  output += '  <a href="#" id="updateall">[refresh]</a>';
-  output += '  &nbsp;&nbsp;<a id="options"  href="#">[options]</a>';
-  output += '  &nbsp;&nbsp;<a href="#" id="documentation" href="#">[documentation]</a>';
+  output += '  <div id="toprightmenu" style="text-align: right; width=25%; float: right; margin-bottom: 6px; }">';
+  output += '  <a href="#" id="updateall" class="button" >refresh</a>';
+  output += '  &nbsp;&nbsp;<a id="options"  class="button" href="#">options</a>';
+  output += '  &nbsp;&nbsp;<a href="#" class="button" id="documentation" href="#">documentation</a>';
   output += '  &nbsp;&nbsp;';
   output += '  </div>'; //header
   output += '  <hr>';
@@ -47,11 +47,11 @@ function OnDisplayInfo(displayInfo)
   output += '<div id="footer" class="footer">';
   output += '  <hr>';
   output += '  <div id="bottom menu" class="mutetabbottomlinks">';
-  output += '  <a href="#" id="muteall">[stop all tabs]</a>&nbsp;&nbsp;';
-  output += '  <a href="#" id="mutebackground">[stop background tabs]</a>&nbsp;&nbsp;';
-  output += '  <a href="#" id="showblocked">[' + ((bg.Options.ShowBlocked === true) ? 'hide' : 'show') + ' stopped]</a>';
+  output += '  <a href="#" class="button" id="muteall">stop all tabs</a>&nbsp;&nbsp;';
+  output += '  <a href="#" class="button" id="mutebackground">stop background tabs</a>&nbsp;&nbsp;';
+  output += '  <a href="#" class="button" id="showblocked">' + ((bg.Options.ShowBlocked === true) ? 'hide' : 'show') + ' stopped</a>';
   output += '  <div id="bottomrightmenu" style="text-align: right; width=25%; float: right">';
-  output += '    <a href="#" id="toggleautomute">[' + ((bg.Options.AutoStopMode === true) ? 'Disable' : 'Enable') + ' autostop background tabs]</a>&nbsp;&nbsp;' ;
+  output += '    <a href="#" class="button" id="toggleautomute">' + ((bg.Options.AutoStopMode === true) ? 'Disable' : 'Enable') + ' autostop background tabs</a>&nbsp;&nbsp;' ;
   output += '  </div>'; //bottomrightmenu
   output += '  </div>'; // bottommenu
   output += '</div>'; //footer

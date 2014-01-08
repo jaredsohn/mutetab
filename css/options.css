@@ -5,11 +5,9 @@
  */
 
 body {
+  font-family: sans-serif;
   margin:20px;
   white-space:nowrap;
-  //background-image:url('popup/bgimage/clouds.jpg'); /* You can find tileable background images at http://subtlepatterns.com/ */
-
-  background-repeat:repeat;
   font-size:12px; 
 }
 
@@ -29,5 +27,5 @@ body {
 }
 
 .optiondisabled {
-   color:grey;
+   color:gray;
 }
