@@ -77,6 +77,7 @@ MigrateOptions = function()
 
   var now = new Date().getTime();
 
+/*
   if (null === localStorage.getItem('welcomed'))
   {
     localStorage.setItem("welcomed", now);
@@ -87,12 +88,12 @@ MigrateOptions = function()
 
     });
   }
-
-  forge.prefs.get("welcomed", _onCheckWelcomed, function() { _onCheckedWelcomed(null); });
+*/
+//  forge.prefs.get("welcomed", _onCheckWelcomed, function() { _onCheckedWelcomed(null); });
   forge.prefs.get("install_time", _onCheckedInstall, function() { _onCheckedInstall(null); });
 };
 
-_onCheckWelcomed = function(val)
+/*_onCheckWelcomed = function(val)
 {
   if (val === null)
   {
@@ -103,7 +104,7 @@ _onCheckWelcomed = function(val)
     var now = new Date().getTime();
     _savePref("welcomed", now);
   }
-};
+};*/
 
 _onCheckedInstall = function(val)
 {
