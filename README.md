@@ -36,6 +36,3 @@ python mergejson/mergejson.py development/chrome/manifest.json src/mutetab_chrom
 
 You can run it by going to chrome://extensions, checking Developer mode, clicking "Load unpacked extension...", and choosing the development/chrome folder.
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jaredsohn/mutetab/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
