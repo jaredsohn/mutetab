@@ -133,7 +133,7 @@ messaging.OnExcludedByUser = function(tabId)
 ////////////////////////////////////////////////////////////////////////////////////
 // Executed on startup
 ////////////////////////////////////////////////////////////////////////////////////
-chrome.runtime.setUninstallUrl("http://www.mutetab.com/bye.html");
+//chrome.runtime.setUninstallUrl("http://www.mutetab.com/bye.html");
 
 MigrateOptions();
 InitOptions(Options);

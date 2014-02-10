@@ -2,7 +2,7 @@
 	"config_version": "2",
 	"name": "MuteTab",
 	"author": "Jared Sohn",
-	"version": "2.1",
+	"version": "2.11",
 	"platform_version": "v1.4",
 	"description": "Helps narrow down which tab that sound is coming from, browser-wide granular sound management",
 	"modules": {

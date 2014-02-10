@@ -116,6 +116,13 @@ _onCheckedInstall = function(val)
     _savePref("install_time", now);
     _savePref("version", version);
 
+    localStorage.setItem("welcomed", now);
+    chrome.tabs.create({
+        'url': "http://www.mutetab.com/welcome.html"
+    }, function(tab) {
+    });
+
+
     try {
       _gaq.push(['_trackEvent', 'installed', version]);
     } catch(ex) {
