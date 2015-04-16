@@ -3,16 +3,16 @@
 // String must be unique for each entry here
 AudioSourceType =
 {
-  Unknown : 'Unknown',
-  HTML5Video : 'HTML5 Video',
-  HTML5Audio : 'HTML5 Audio',
+  Unknown: 'Unknown',
+  HTML5Video: 'HTML5 Video',
+  HTML5Audio: 'HTML5 Audio',
   QuickTime: 'QuickTime',               // http://developer.apple.com/library/mac/#documentation/QuickTime/Conceptual/QTScripting_JavaScript/bQTScripting_JavaScri_Document/QuickTimeandJavaScri.html#//apple_ref/doc/uid/TP40001526-CH001-SW5
   UnknownObject: 'Unknown object',
   UnknownEmbed: 'Unknown embed',
   JavaApplet: 'Java Applet',
   LegacySound: 'Legacy Sound',
   Silverlight: 'Silverlight',           // http://msdn.microsoft.com/en-us/library/bb979679(VS.95).aspx  / person asking questions about this and hulu, etc.: http://forums.boxee.tv/showthread.php?t=15714; http://programming4.us/website/254.aspx
-  RealPlayer:  'RealPlayer',
+  RealPlayer: 'RealPlayer',
   WindowsMediaPlayer: 'Windows Media Player', ////http://www.w3schools.com/media/media_playerref.asp
 
   FlashMultiFrame: 'Flash (multiframe)',
@@ -24,7 +24,7 @@ AudioSourceType =
   FlashSoundManager2: 'SoundManager2', // http://www.schillmania.com/projects/soundmanager2/doc/#api.   Just implementing for 'all' right now.
   FlashDailyMotion: 'DailyMotion',  // http://www.dailymotion.com/doc/api/player/javascript_api#DailymotionPlayerTools-enabling-api
   FlashDailyMotionNoJsApi: 'DailyMotion (JavaScript disabled)',
-  FlashJWPlayer:    'JWPlayer',  // http://developer.longtailvideo.com/trac/wiki/Player5Api
+  FlashJWPlayer: 'JWPlayer',  // http://developer.longtailvideo.com/trac/wiki/Player5Api
 
   // Add support for these:
   FlashGrooveShark: 'Grooveshark',
@@ -47,14 +47,14 @@ Operation =
 {
   None: 'None',
 
-  Mute : 'Mute',
-  Unmute : 'Unmute',
-  Play : 'Play',
-  Pause : '_Pause', // renamed since we're using this verbage for smartmutesafe
-  Stop : '_Stop', // renamed since we're using this verbage for smartmute
+  Mute: 'Mute',
+  Unmute: 'Unmute',
+  Play: 'Play',
+  Pause: '_Pause', // renamed since we're using this verbage for smartmutesafe
+  Stop: '_Stop', // renamed since we're using this verbage for smartmute
 
-  Close : 'Close',
-  Show : 'Show',
+  Close: 'Close',
+  Show: 'Show',
 
   Block: 'Block',       //TODO: implement these soon.  basically when i 'hide' or 'show' a video element, use this instead of other actions
   Unblock: 'Unblock',
@@ -64,19 +64,19 @@ Operation =
   MarkVisited: 'Markvisited',
   GetTabInfo: 'GetTabInfo',
 
-  Update : 'Refresh',
+  Update: 'Refresh',
 
   // TODO: below aren't supported yet
-  FastForward : 'Fastforward',
-  Rewind : 'Rewind',
-  GoToTime : 'Gototime',
+  FastForward: 'Fastforward',
+  Rewind: 'Rewind',
+  GoToTime: 'Gototime',
 
   Louder: 'Louder',
   Quieter: 'Quieter',
   SetVolumeTo: 'SetVolumeTo',
 
   MultiframePause: 'FlashStopPlay',
-  MultiframePlay:  'FlashPlay',
+  MultiframePlay: 'FlashPlay',
 
   SmartMute: 'Stop',
   SmartMuteSafe: 'Pause',
@@ -135,25 +135,25 @@ TabInfo = function()
 
 TabDisplayInfo = function()
 {
-	this.TabId = -1;
-	this.FriendlyName = ""; // HTML describing domain and title
-	this.FullUrl = "";	// favicon url can be derived from this (using chrome://favicon)
+  this.TabId = -1;
+  this.FriendlyName = ""; // HTML describing domain and title
+  this.FullUrl = "";  // favicon url can be derived from this (using chrome://favicon)
 
-	this.AudioSources = null; //TODO array of AudioSourceDisplayInfos
-	this.Operations = null;
+  this.AudioSources = null; //TODO array of AudioSourceDisplayInfos
+  this.Operations = null;
 };
 AudioSourceDisplayInfo = function()
 {
-	this.Id = "";
-	this.AudioSourceType = AudioSourceType.Unknown;
-	this.AudioSourceTypeImageUrl = "";
-	this.FriendlySrc = "";
-	this.Src = "";
-	this.CanMuteSafe = false;
-	this.Operations = null;
-	this.Blocked = false;
-	this.FrameIndex = -1;
-	this.FrameAudioSourceIndex = -1;
+  this.Id = "";
+  this.AudioSourceType = AudioSourceType.Unknown;
+  this.AudioSourceTypeImageUrl = "";
+  this.FriendlySrc = "";
+  this.Src = "";
+  this.CanMuteSafe = false;
+  this.Operations = null;
+  this.Blocked = false;
+  this.FrameIndex = -1;
+  this.FrameAudioSourceIndex = -1;
 };
 
 FrameInfo = function()
@@ -180,17 +180,6 @@ FrameOperationRequest = function()
 // General utilities
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// http://www.delphifaq.com/faq/f1031.shtml
-function trim(s)
-{
-  var l=0; var r=s.length -1;
-  while(l < s.length && s[l] === ' ')
-  {     l++; }
-  while(r > l && s[r] === ' ')
-  {     r-=1;     }
-  return s.substring(l, r+1);
-}
-
 //http://ivan-gandhi.livejournal.com/942493.html; get an error when i run it though
 function stacktrace() {
   function st2(f) {
@@ -202,5 +191,5 @@ function stacktrace() {
 
 // get jQuery selector (from web)
 function jq(myid) {
-		return '#' + myid.replace(/(:|\.)/g,'\\$1');
+  return '#' + myid.replace(/(:|\.)/g,'\\$1');
 }

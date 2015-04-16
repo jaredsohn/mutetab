@@ -16,10 +16,10 @@
 			"run_at": "start",
 			"patterns": ["http://*/*", "https://*/*"],
 	        "scripts": [
-				"js/lib/jquery.js",
+				"js/vendor/jquery.js",
 				"js/shared/core.js",
 				"js/shared/operationssupported.js",
-		        "js/lib/elementclassutil.js",
+		        "js/vendor/elementclassutil.js",
 				"js/contentscript/operation.js",
 				"js/contentscript/objectembed.js",
 		        "js/contentscript/messaging_contentscript.js",
@@ -31,11 +31,11 @@
 		}],
 		"background": {
 			"files": [
-				"js/lib/deepcopy.js",
+				"js/vendor/deepcopy.js",
 				"js/shared/analytics.js",
-				"js/lib/ga.js",
+				"js/vendor/ga.js",
 				"js/shared/core.js",
-				"js/lib/async.min.js",
+				"js/vendor/async.min.js",
 				"js/background/injectjs.js",
 				"js/options.js",
 				"js/background/messaging.js",

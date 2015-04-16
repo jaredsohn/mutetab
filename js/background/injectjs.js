@@ -1,14 +1,14 @@
 // Wraps injecting JavaScript into a tab with some tabid
 //
 // Had been used to have MuteTab work on tabs open prior to installing extension (but broken in 9/13)
-// A warning on using this: contentscripts are injected into the normal DOM instead of 
+// A warning on using this: contentscripts are injected into the normal DOM instead of
 // the separate ones that Chrome normally executes them in.
 
 var InjectJS = function(js, tabid, callback, callbackparam) {
   var details = {};
   details.code = js;
   details.allFrames = true;
-  chrome.tabs.executeScript(tabid, details, function(){
+  chrome.tabs.executeScript(tabid, details, function() {
     callback(callbackparam);
   });
 };
@@ -29,7 +29,7 @@ var InjectContentScripts = function(tabId, callback, callbackparam) {
 
     consolelog("going to inject into tabid " + tabId + "\n");
     consolelog(details);
-    chrome.tabs.executeScript(tabId, details, function(){
+    chrome.tabs.executeScript(tabId, details, function() {
 
       callback(callbackparam);
     });
@@ -42,6 +42,6 @@ var InjectContentScripts = function(tabId, callback, callbackparam) {
       callback(callbackparam);
   });
 };
-var InjectContentScriptsAsync = function(tabId){
+var InjectContentScriptsAsync = function(tabId) {
   scope.InjectContentScripts(tabId, null, null);
 };

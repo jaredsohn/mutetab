@@ -58,7 +58,7 @@ GetAllowedOperationsForTabId = function(tabId, excludeShow, options)
         continue;
     }
 
-    if ((typeof(tabInfo) !== 'undefined') && (tabInfo !== null)) // we leave all operations available for all tabs and all but current
+    if ((typeof tabInfo !== 'undefined') && (tabInfo !== null)) // we leave all operations available for all tabs and all but current
     {
       if (!OperationSupportedForTabInfo(tabInfo, mainOperationsList[operationIndex], options))
         continue;

@@ -11,7 +11,7 @@ var _detectAudioSources = function() {
   this.GetAudioSources = function() {
     var audioSources = [];
 
-    $(document).ready( function() {
+    $(document).ready(function() {
       consolelog("__begin getaudiosources");
       scope._getAudioSources($(document), audioSources, [], true);
       consolelog("__end getaudiosources");
@@ -33,7 +33,7 @@ var _detectAudioSources = function() {
     }
 
     // Also do the same if within a same-site iframe
-    $(selector).find("iframe").each(function(i){
+    $(selector).find("iframe").each(function(i) {
       try {
         consolelog("0");
         consolelog(iFrameAncestors);
@@ -51,7 +51,7 @@ var _detectAudioSources = function() {
         }
         consolelog("iframe src: " + src);
         consolelog("1");
-        if ((typeof(src) === 'undefined') || (src === '') || (src === null) || (src === "about:blank"))
+        if ((typeof src === 'undefined') || (src === '') || (src === null) || (src === "about:blank"))
         {
           includeAudioSources = true;
           consolelog("no source");
@@ -95,7 +95,7 @@ var _detectAudioSources = function() {
     consolelog(tag + "!");
     //consolelog($(selector).clone().wrap('<div>').parent().html());
 
-    switch(tag)
+    switch (tag)
     {
       case "object":
         audioSource = scope.CreateAudioSource(selector, AudioSourceType.UnknownObject);
@@ -136,13 +136,13 @@ var _detectAudioSources = function() {
       audioSource.AudioSourceType = audioSourceType;
       audioSource.Id = scope.GetClassName(selector);
       audioSource.OrigId = $(selector).attr('id');
-      if ((typeof(audioSource.Id) === 'undefined') || (audioSource.Id === null) || (audioSource.Id === '')) {
+      if ((typeof audioSource.Id === 'undefined') || (audioSource.Id === null) || (audioSource.Id === '')) {
         audioSource.Id = scope.GetUniqueClassName(selector);
         AddClassName(selector, audioSource.Id, false); // It doesn't seem that this change requires flickering; otherwise would have to indicate that
         //console.log(GetClassesWithPrefix(selector, 'mutetabId_'));
       }
       audioSource.Blocked = scope.IsBlocked($(selector));
-    } catch(ex) {
+    } catch (ex) {
       consoleerror('detectaudiosources-' + audioSourceType + ': ' + ex);
       audioSource = null;
     }
@@ -196,7 +196,7 @@ var _detectAudioSources = function() {
   };
 
   this.GetRandomId = function() {
-    return "mutetabId_" + Math.floor(Math.random()*10000001);
+    return "mutetabId_" + Math.floor(Math.random() * 10000001);
   };
 
   this.IsBlocked = function(jqselector) {
@@ -226,7 +226,7 @@ var _detectAudioSources = function() {
 
     //TODO: try to move this block of code inside of objectembed.js
     audioSource.ClassId = $(obj).attr('classid');
-    if (typeof(audioSource.ClassId) === "undefined")
+    if (typeof audioSource.ClassId === "undefined")
       audioSource.ClassId = $(obj).attr('type'); // useful for rdio.  Should research more to figure out exactly how this should work
     //consolelog(audioSource.ClassId);
     var defaultAudioSourceType = AudioSourceType.UnknownObject;
@@ -237,7 +237,7 @@ var _detectAudioSources = function() {
     if ((audioSource.AudioSourceType === AudioSourceType.FlashOther) || (audioSource.AudioSourceType === defaultAudioSourceType)) //TODO: shouldn't assume flash by default
     {
       var allowScriptAccess = GetParamStoreValue(paramStore, 'allowscriptaccess', "params");
-      if ((typeof(allowScriptAccess) === 'undefined') || (allowScriptAccess === null))
+      if ((typeof allowScriptAccess === 'undefined') || (allowScriptAccess === null))
         allowScriptAccess = 'never';
 
       if (allowScriptAccess.toLowerCase() !== 'always') // todo: samedomain could be okay in some cases
@@ -266,7 +266,7 @@ var _detectAudioSources = function() {
       var enableJavaScript = GetParamStoreValue(paramStore, 'EnableJavaScript', "params");
       //console.log(enableJavaScript);
 
-      if ((typeof(enableJavaScript) === 'undefined') || (enableJavaScript === null))
+      if ((typeof enableJavaScript === 'undefined') || (enableJavaScript === null))
       {
         if (scope.ForceScripting === true)
         {
@@ -356,7 +356,7 @@ var _detectAudioSources = function() {
   this.HandleFlashPlayers = function(paramStore, obj, audioSource, noJsApi) {
     var changeMade = false;
 
-    if ((typeof(audioSource.Src) === 'undefined') || (audioSource.Src === null))
+    if ((typeof audioSource.Src === 'undefined') || (audioSource.Src === null))
       return changeMade;
 
     if (((audioSource.Src).indexOf('http://www.youtube.com') === 0) || ((audioSource.Src).indexOf('https://www.youtube.com') === 0) || ((audioSource.Src).indexOf('ytimg') !== -1))
@@ -366,13 +366,13 @@ var _detectAudioSources = function() {
       var enableJsApi = GetParamStoreValue(paramStore, 'enablejsapi', 'flashvars');
       var playerApiId = GetParamStoreValue(paramStore, 'playerapiid', 'flashvars');
 
-      if ((typeof(enableJsApi) === 'undefined') || (enableJsApi === null))
+      if ((typeof enableJsApi === 'undefined') || (enableJsApi === null))
         enableJsApi = 0;
       if (enableJsApi !== 1) {
         if ((scope.ForceScripting === true) && (noJsApi === false)) {
           UpdateParamStoreValue(paramStore, obj, 'enablejsapi', '1', 'flashvars');
 
-          if ((typeof(playerApiId) === 'unknown') || (playerApiId === null))
+          if ((typeof playerApiId === 'unknown') || (playerApiId === null))
             UpdateParamStoreValue(paramStore, obj, 'playerapiid', audioSource.Id, 'flashvars');
 
           audioSource.Src = GetParamStoreValue(paramStore, paramStore.SrcVar, 'params');

@@ -54,13 +54,13 @@ var _flashvarsRegExp = /([^&=]+)=?([^&]*)/g; // the same right now.  reason for 
 
 function GetParamStore(obj, objectOrEmbed)
 {
-	var paramStore = {};
-	paramStore.Attribs = {};
-	paramStore.Params = {};
-	paramStore.FlashVars = {};
-	paramStore.SrcVars ={};
-	paramStore.ObjectOrEmbed = objectOrEmbed;
-	paramStore.SrcVar = (objectOrEmbed === "object") ? "data" : "src"; // could get changed later to movie, though
+  var paramStore = {};
+  paramStore.Attribs = {};
+  paramStore.Params = {};
+  paramStore.FlashVars = {};
+  paramStore.SrcVars = {};
+  paramStore.ObjectOrEmbed = objectOrEmbed;
+  paramStore.SrcVar = (objectOrEmbed === "object") ? "data" : "src"; // could get changed later to movie, though
 
 // http://www.donatofurlani.it/category/webdesign/31/from_html_to_xhtml
 // seems like <object> has data as an attribute and movie as a param and that embed has 'src' as an attribute.  Not sure what happens when both data and movie exist and have different values.
@@ -69,190 +69,190 @@ function GetParamStore(obj, objectOrEmbed)
 //consolelog("obj");
 //consolelog(obj);
 
-	$(obj).find("param").each( function(j) {
+  $(obj).find("param").each(function(j) {
 
-		try
-		{
-			var paramName = $(this).attr('name').toLowerCase();
-			paramStore.Params[paramName] = $(this);
-			if (paramName === 'flashvars')
-				paramStore.FlashVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'params', objectOrEmbed));
-			else {
-				if (paramName === "movie") {
-					paramStore.SrcVar = "movie";
-					paramStore.SrcVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'params', objectOrEmbed));
-				}
-			}
-		} catch (ex)
-		{
-			consolelog('GetObjectEmbedParamDict exception: ' + ex);
-		}
-	});
+    try
+    {
+      var paramName = $(this).attr('name').toLowerCase();
+      paramStore.Params[paramName] = $(this);
+      if (paramName === 'flashvars')
+        paramStore.FlashVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'params', objectOrEmbed));
+      else {
+        if (paramName === "movie") {
+          paramStore.SrcVar = "movie";
+          paramStore.SrcVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'params', objectOrEmbed));
+        }
+      }
+    } catch (ex)
+    {
+      consolelog('GetObjectEmbedParamDict exception: ' + ex);
+    }
+  });
 
 //consolelog("paramstore");
 //consolelog(paramStore);
 //consolelog("attribs");
 //consolelog(obj.attributes);
 
-	$.each(obj.attributes, function(i, attrib){
+  $.each(obj.attributes, function(i, attrib) {
 
-		var paramName = attrib.name.toLowerCase();
-		paramStore.Attribs[paramName] = attrib.value;
-		if (paramName === 'flashvars')
-			paramStore.FlashVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'attribs', objectOrEmbed));
-		else if (paramName === paramStore.SrcVar)
-			paramStore.SrcVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'attribs', objectOrEmbed));
-	});
+    var paramName = attrib.name.toLowerCase();
+    paramStore.Attribs[paramName] = attrib.value;
+    if (paramName === 'flashvars')
+      paramStore.FlashVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'attribs', objectOrEmbed));
+    else if (paramName === paramStore.SrcVar)
+      paramStore.SrcVars = _parseParams(GetParamStoreValue(paramStore, paramName, 'attribs', objectOrEmbed));
+  });
 
-	return paramStore;
+  return paramStore;
 }
 
 function GetParamStoreValue(paramStore, key, storeType)
 {
-//	consolelog("getobjectembedvalue - " + key);
+//  consolelog("getobjectembedvalue - " + key);
     if ((paramStore.ObjectOrEmbed !== "object") && (paramStore.ObjectOrEmbed !== "embed"))
-		throw "paramStore.ObjectOrEmbed must be object or embed";
+    throw "paramStore.ObjectOrEmbed must be object or embed";
 
-	if ((storeType !== "params") && (storeType !== "attribs") && (storeType !== "flashvars") && (storeType !== "srcvars"))
-		throw "storeType must be params, attribs, flashvars, or srcvars";
+  if ((storeType !== "params") && (storeType !== "attribs") && (storeType !== "flashvars") && (storeType !== "srcvars"))
+    throw "storeType must be params, attribs, flashvars, or srcvars";
 
     var value = null;
     var selector = null;
 
-	if ((paramStore.ObjectOrEmbed === "object") && (storeType === "params"))
-	{
-		selector = paramStore.Params[key.toLowerCase()];
-		if ((typeof(selector) === 'undefined') || (selector === null)) {
-			// Fall back to attribs if not found in params
-			selector = paramStore.Attribs[key.toLowerCase()];
+  if ((paramStore.ObjectOrEmbed === "object") && (storeType === "params"))
+  {
+    selector = paramStore.Params[key.toLowerCase()];
+    if ((typeof selector === 'undefined') || (selector === null)) {
+      // Fall back to attribs if not found in params
+      selector = paramStore.Attribs[key.toLowerCase()];
 
-			if ((typeof(selector) === 'undefined') || (selector === null))
-				return null;
+      if ((typeof selector === 'undefined') || (selector === null))
+        return null;
 
-			value = selector;
-		}
-		else {
-			value = selector.attr('VALUE');
-		}
-	} else if (storeType === "flashvars")
-	{
-		// Prioritize srcvars when doing lookup
-		selector = paramStore.SrcVars[key.toLowerCase()];
-		if ((typeof(selector) === 'unknown') || (selector === null))
-			selector = paramStore.FlashVars[key.toLowerCase()];
+      value = selector;
+    }
+    else {
+      value = selector.attr('VALUE');
+    }
+  } else if (storeType === "flashvars")
+  {
+    // Prioritize srcvars when doing lookup
+    selector = paramStore.SrcVars[key.toLowerCase()];
+    if ((typeof selector === 'unknown') || (selector === null))
+      selector = paramStore.FlashVars[key.toLowerCase()];
 
-		if ((typeof(selector) === 'undefined') || (selector === null))
-			return null;
+    if ((typeof selector === 'undefined') || (selector === null))
+      return null;
 
-		value = selector;
-	} else if (storeType === "srcvars")
-	{
-		selector = paramStore.SrcVars[key.toLowerCase()];
+    value = selector;
+  } else if (storeType === "srcvars")
+  {
+    selector = paramStore.SrcVars[key.toLowerCase()];
 
-		if ((typeof(selector) === 'undefined') || (selector === null))
-			return null;
+    if ((typeof selector === 'undefined') || (selector === null))
+      return null;
 
-		value = selector;
-	}
-	else // So if user chose 'params' for an embed, it will really use 'attribs'
-	{
-		selector = paramStore.Attribs[key.toLowerCase()];
+    value = selector;
+  }
+  else // So if user chose 'params' for an embed, it will really use 'attribs'
+  {
+    selector = paramStore.Attribs[key.toLowerCase()];
 
-		if ((typeof(selector) === 'undefined') || (selector === null))
-			return null;
+    if ((typeof selector === 'undefined') || (selector === null))
+      return null;
 
-		value = selector;
-	}
+    value = selector;
+  }
 
-	return value;
+  return value;
 }
 
 function UpdateParamStoreValue(paramStore, obj, key, value, storeType)
 {
-	if ((paramStore.ObjectOrEmbed !== "object") && (paramStore.ObjectOrEmbed !== "embed"))
-	throw "paramStore.ObjectOrEmbed must be object or embed";
+  if ((paramStore.ObjectOrEmbed !== "object") && (paramStore.ObjectOrEmbed !== "embed"))
+  throw "paramStore.ObjectOrEmbed must be object or embed";
 
     if ((storeType !== "params") && (storeType !== "attribs") && (storeType !== "flashvars") && (storeType !== "srcvars"))
-		throw "storeType must be params, attribs, flashvars, or srcvars";
+    throw "storeType must be params, attribs, flashvars, or srcvars";
 
-	if (storeType === "flashvars") {
-		// if flash var exists in srcvars, then update it there instead
-		var val = GetParamStoreValue(paramStore, 'srcvars', 'attribs', paramStore.ObjectOrEmbed);
-		if ((typeof(val) !== null) && (val !== null))
-			storeType = 'srcvars';
-	}
+  if (storeType === "flashvars") {
+    // if flash var exists in srcvars, then update it there instead
+    var val = GetParamStoreValue(paramStore, 'srcvars', 'attribs', paramStore.ObjectOrEmbed);
+    if ((typeof val !== null) && (val !== null))
+      storeType = 'srcvars';
+  }
 
-	if (storeType === "flashvars") {
-		paramStore.FlashVars[key] = value;
-		var flashVars = _dictToString(paramStore.FlashVars, '&');
-		_updateValue(paramStore, obj, 'flashvars', flashVars, 'attribs');
-	} else if (storeType === "srcvars") {
-		paramStore.SrcVars[key] = value;
-		var src = _dictToString(paramStore.SrcVars, '&');
-		_updateValue(paramStore, obj, paramStore.SrcVar, src, 'attribs');
-	}
-	else {
-		_updateValue(paramStore, obj, key, value, storeType);
-	}
+  if (storeType === "flashvars") {
+    paramStore.FlashVars[key] = value;
+    var flashVars = _dictToString(paramStore.FlashVars, '&');
+    _updateValue(paramStore, obj, 'flashvars', flashVars, 'attribs');
+  } else if (storeType === "srcvars") {
+    paramStore.SrcVars[key] = value;
+    var src = _dictToString(paramStore.SrcVars, '&');
+    _updateValue(paramStore, obj, paramStore.SrcVar, src, 'attribs');
+  }
+  else {
+    _updateValue(paramStore, obj, key, value, storeType);
+  }
 }
 
 function _dictToString(dict, separator)
 {
-	var str = "";
+  var str = "";
 
-	for (var key in dict)
-		str += key + "=" + dict[key] + separator;
+  for (var key in dict)
+    str += key + "=" + dict[key] + separator;
 
-	// Remove last semicolon
-	if (str.length > 0)
-		str = str.substr(0, str.length - separator.length);
+  // Remove last semicolon
+  if (str.length > 0)
+    str = str.substr(0, str.length - separator.length);
 
-	return str;
+  return str;
 }
 
 //From http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 function _parseParams(paramString) {
-	var dict = {};
+  var dict = {};
 
-	if (typeof(paramString) === 'undefined')
-		return dict;
+  if (typeof paramString === 'undefined')
+    return dict;
 
-	var urlParams = {};
-	(function () {
-		var e,
-		a = /\+/g,  // Regex for replacing addition symbol with a space
-		r = /([^&=]+)=?([^&]*)/g,
-		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		q = paramString;
+  var urlParams = {};
+  (function() {
+    var e,
+    a = /\+/g,  // Regex for replacing addition symbol with a space
+    r = /([^&=]+)=?([^&]*)/g,
+    d = function(s) { return decodeURIComponent(s.replace(a, " ")); },
+    q = paramString;
 
-		while (e = r.exec(q)) {
-			//consolelog(e);
-			dict[d(e[1])] = d(e[2]);
-		}
-	})();
+    while (e = r.exec(q)) {
+      //consolelog(e);
+      dict[d(e[1])] = d(e[2]);
+    }
+  })();
 
-	return dict;
+  return dict;
 }
 
 function _updateValue(paramStore, obj, key, value, storeType)
 {
-	if ((paramStore.ObjectOrEmbed === "object") && (storeType === "params")) {
-		var selector = paramStore.Params[key.toLowerCase()];
-		if ((typeof(selector) === 'undefined') || (selector === null))
-			selector = $(obj).append('<param NAME="' + key + '" VALUE="' + value + '"/>');
+  if ((paramStore.ObjectOrEmbed === "object") && (storeType === "params")) {
+    var selector = paramStore.Params[key.toLowerCase()];
+    if ((typeof selector === 'undefined') || (selector === null))
+      selector = $(obj).append('<param NAME="' + key + '" VALUE="' + value + '"/>');
 
-		selector.attr('VALUE', value);
-		paramStore.Params[key.toLowerCase()] = value;
-	}
-	else // So if user chose 'params' for an embed, it will really use 'attribs'
-	{
-		$(obj).attr(key, value);
-		paramStore.Attribs[key.toLowerCase()] = value;
+    selector.attr('VALUE', value);
+    paramStore.Params[key.toLowerCase()] = value;
+  }
+  else // So if user chose 'params' for an embed, it will really use 'attribs'
+  {
+    $(obj).attr(key, value);
+    paramStore.Attribs[key.toLowerCase()] = value;
 
-		// Regenerate flashvars or src if needed
-		if (key.toLowerCase() === 'flashvars')
-			paramStore.FlashVars = _parseParams(GetParamStoreValue(paramStore, 'flashvars', 'attribs', paramStore.ObjectOrEmbed));
-		else if (key.toLowerCase() === paramStore.SrcVar)
-			paramStore.SrcVars = _parseParams(GetParmaStoreValue(paramStore, paramStore.SrcVar, 'attribs', paramStore.ObjectOrEmbed));
-	}
+    // Regenerate flashvars or src if needed
+    if (key.toLowerCase() === 'flashvars')
+      paramStore.FlashVars = _parseParams(GetParamStoreValue(paramStore, 'flashvars', 'attribs', paramStore.ObjectOrEmbed));
+    else if (key.toLowerCase() === paramStore.SrcVar)
+      paramStore.SrcVars = _parseParams(GetParmaStoreValue(paramStore, paramStore.SrcVar, 'attribs', paramStore.ObjectOrEmbed));
+  }
 }

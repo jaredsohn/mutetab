@@ -309,13 +309,13 @@ function Block(audioSource, selector)
     return;
 
   if (audioSource.IFrameAncestors.length > 0)
-	return;
+    return;
 
   var height = selector.attr('height');
   var width = selector.attr('width');
-  if (typeof(height) === 'undefined')
+  if (typeof height === 'undefined')
     height = 50;
-  if (typeof(width) === 'undefined')
+  if (typeof width === 'undefined')
     width = 50;
 
   //TODO: allow clicking to unblock like you can with flashblock
@@ -339,7 +339,7 @@ function Unblock(audioSource, selector)
     return;
 
   if (audioSource.IFrameAncestors.length > 0)
-	return;
+    return;
 
   selector.prev().remove(); //TODO: hopefully, we're actually blocked before user chooses this; probably need to store the id for this within the audioSource and check for that here
   selector.show();
