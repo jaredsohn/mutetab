@@ -51,7 +51,7 @@ function OnDisplayInfo(displayInfo)
   output += '  <a href="#" class="button" id="mutebackground">stop background tabs</a>&nbsp;&nbsp;';
   output += '  <a href="#" class="button" id="showblocked">' + ((bg.Options.ShowBlocked === true) ? 'hide' : 'show') + ' stopped</a>';
   output += '  <div id="bottomrightmenu" style="text-align: right; width=25%; float: right">';
-  output += '    <a href="#" class="button" id="toggleautomute">' + ((bg.Options.AutoStopMode === true) ? 'Disable' : 'Enable') + ' autostop background tabs</a>&nbsp;&nbsp;' ;
+  output += '    <a href="#" class="button" id="toggleautomute">' + ((bg.Options.AutoStopMode === true) ? 'Disable' : 'Enable') + ' autostop background tabs</a>&nbsp;&nbsp;';
   output += '  </div>'; //bottomrightmenu
   output += '  </div>'; // bottommenu
   output += '</div>'; //footer
@@ -69,13 +69,13 @@ var CreateEventListeners = function(displayInfo)
   //console.log("createeventlisteners");
   //console.log(displayInfo);
 
-  document.getElementById("updateall").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLTABS, Operation.Update, true); } );
+  document.getElementById("updateall").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLTABS, Operation.Update, true); });
 //  document.getElementById("options").addEventListener("click", function(evt) { window.open(chrome.extension.getURL("/src/js/options.html")); } );
-  document.getElementById("documentation").addEventListener("click", function(evt) { window.open("http://www.mutetab.com/mutetabdoc.html"); } );
-  document.getElementById("showblocked").addEventListener("click", function(evt) { bg.Options.ShowBlocked = !bg.Options.ShowBlocked; bg.SaveOptions(bg.Options); location.reload(); } );
-  document.getElementById("muteall").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLTABS, Operation.SmartMute, true); } );
-  document.getElementById("toggleautomute").addEventListener("click", function(evt) { bg.Options.AutoStopMode = !bg.Options.AutoStopMode; bg.SaveOptions(bg.Options); if (bg.Options.AutoStopMode === true) { OperateOnTab(bg.messaging.ALLBUTCURRENTTAB, Operation.SmartMute, true); } else { location.reload(); } } );
-  document.getElementById("mutebackground").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLBUTCURRENTTAB, Operation.SmartMute, true); } );
+  document.getElementById("documentation").addEventListener("click", function(evt) { window.open("http://www.mutetab.com/mutetabdoc.html"); });
+  document.getElementById("showblocked").addEventListener("click", function(evt) { bg.Options.ShowBlocked = !bg.Options.ShowBlocked; bg.SaveOptions(bg.Options); location.reload(); });
+  document.getElementById("muteall").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLTABS, Operation.SmartMute, true); });
+  document.getElementById("toggleautomute").addEventListener("click", function(evt) { bg.Options.AutoStopMode = !bg.Options.AutoStopMode; bg.SaveOptions(bg.Options); if (bg.Options.AutoStopMode === true) { OperateOnTab(bg.messaging.ALLBUTCURRENTTAB, Operation.SmartMute, true); } else { location.reload(); } });
+  document.getElementById("mutebackground").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLBUTCURRENTTAB, Operation.SmartMute, true); });
 
   CreateEventListenersForTabs(displayInfo.CurrentTabInfo);
   CreateEventListenersForTabs(displayInfo.OtherIndividualTabInfos);
@@ -109,10 +109,10 @@ var CreateEventListeners = function(displayInfo)
         var frIndex = frameIndex;
         if (opStrArray.length === 3)
         {
-          ops[i].addEventListener("click", function(evt) { OperateOnTab(id, opName, false); } );
+          ops[i].addEventListener("click", function(evt) { OperateOnTab(id, opName, false); });
         } else if (opStrArray.length === 2)
         {
-          ops[i].addEventListener("click", function(evt) { OperateOnTab(id, opName, frIndex, false); } );
+          ops[i].addEventListener("click", function(evt) { OperateOnTab(id, opName, frIndex, false); });
         }
       })();
     }
@@ -133,10 +133,10 @@ var CreateEventListenersForTab = function(tabInfo)
   var el = document.getElementById('collapseexpandfortab_' + tabInfo.TabId);
 
   // Ignore if element doesn't exist (such as if it is blocked and blocked tabs are hidden)
-  if ((typeof(el) !=='undefined') && (el !== null))
+  if ((typeof(el) !== 'undefined') && (el !== null))
   {
-    el.addEventListener("click", function(evt) { if (bg.Options.ExpandTabId === tabId) { Collapse(tabId); } else { Expand(tabId); } } );
-    document.getElementById('showTabImage_' + tabInfo.TabId).addEventListener("click", function(evt) { OperateOnTab(tabId, Operation.Show, true); } );
-    document.getElementById('showTabText_' + tabInfo.TabId).addEventListener("click", function(evt) { OperateOnTab(tabId, Operation.Show, true); } );
+    el.addEventListener("click", function(evt) { if (bg.Options.ExpandTabId === tabId) { Collapse(tabId); } else { Expand(tabId); } });
+    document.getElementById('showTabImage_' + tabInfo.TabId).addEventListener("click", function(evt) { OperateOnTab(tabId, Operation.Show, true); });
+    document.getElementById('showTabText_' + tabInfo.TabId).addEventListener("click", function(evt) { OperateOnTab(tabId, Operation.Show, true); });
   }
 };

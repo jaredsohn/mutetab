@@ -64,35 +64,35 @@ function OperateOnTab(tabId, operation, isSync) {
 // Automatically collapses what was previously expanded and saves what should be expanded to local storage
 function Expand(tabId)
 {
-	Collapse(bg.Options.ExpandTabId);
+  Collapse(bg.Options.ExpandTabId);
 
-//	console.log("expand");
-	try {
-		document.getElementById("audiosourcesfortab_" + tabId).style.display = 'block';
-		document.getElementById("collapseexpandfortab_" + tabId).src = "img/operations/minus.png";
+//  console.log("expand");
+  try {
+    document.getElementById("audiosourcesfortab_" + tabId).style.display = 'block';
+    document.getElementById("collapseexpandfortab_" + tabId).src = "img/operations/minus.png";
 
-		bg.Options.ExpandTabId = tabId;
-		bg.SaveOptions(bg.Options);
-	} catch (ex)
-	{
-		consolelog("error:");
-		consolelog(ex);
-		consolelog(tabId);
-	}
+    bg.Options.ExpandTabId = tabId;
+    bg.SaveOptions(bg.Options);
+  } catch (ex)
+  {
+    consolelog("error:");
+    consolelog(ex);
+    consolelog(tabId);
+  }
 }
 
 function Collapse(tabId)
 {
-	bg.Options.ExpandTabId = -1;
-	bg.SaveOptions(bg.Options);
+  bg.Options.ExpandTabId = -1;
+  bg.SaveOptions(bg.Options);
 
-	try {
-		document.getElementById("audiosourcesfortab_" + tabId).style.display = 'none';
-		document.getElementById("collapseexpandfortab_" + tabId).src = "img/operations/plus2.png";
-	} catch (ex)
-	{
+  try {
+    document.getElementById("audiosourcesfortab_" + tabId).style.display = 'none';
+    document.getElementById("collapseexpandfortab_" + tabId).src = "img/operations/plus2.png";
+  } catch (ex)
+  {
 
-	}
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
