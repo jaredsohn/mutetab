@@ -2,46 +2,46 @@
 	"config_version": "2",
 	"name": "MuteTab",
 	"author": "Jared Sohn",
-	"version": "2.11",
+	"version": "2.13",
 	"platform_version": "v1.4",
-	"description": "Helps narrow down which tab that sound is coming from, browser-wide granular sound management",
+	"description": "Helps narrow down which tab that sound is coming from, and often lets you stop or pause it",
 	"modules": {
 		"button": {
-			"default_popup": "js/popup.html",
+			"default_popup": "popup.html",
 			"default_title": "MuteTab",
-			"default_icon": "js/favicon.png"
+			"default_icon": "img/favicon.png"
 		},
 		"activations": [
-		{ 
+		{
 			"run_at": "start",
 			"patterns": ["http://*/*", "https://*/*"],
 	        "scripts": [
 				"js/lib/jquery.js",
 				"js/shared/core.js",
-				"js/shared/operationssupported.js", 
-		                "js/lib/elementclassutil.js",
+				"js/shared/operationssupported.js",
+		        "js/lib/elementclassutil.js",
 				"js/contentscript/operation.js",
 				"js/contentscript/objectembed.js",
-		                "js/contentscript/messaging_contentscript.js",
+		        "js/contentscript/messaging_contentscript.js",
 				"js/contentscript/detectaudiosources.js",
 				"js/contentscript/contentscript.js",
-		                "js/contentscript/init.js"],
+		        "js/contentscript/init.js"],
 	        "styles": [],
 	        "all_frames": true
 		}],
 		"background": {
 			"files": [
-				"js/lib/deepcopy.js", 
-				"js/shared/analytics.js", 
-				"js/lib/ga.js", 
-				"js/shared/core.js", 
-				"js/lib/async.min.js", 
+				"js/lib/deepcopy.js",
+				"js/shared/analytics.js",
+				"js/lib/ga.js",
+				"js/shared/core.js",
+				"js/lib/async.min.js",
 				"js/background/injectjs.js",
-				"js/options.js", 
-				"js/background/messaging.js", 
-				"js/background/displayutil.js", 
-				"js/background/contextmenus.js", 
-				"js/shared/operationssupported.js", 
+				"js/options.js",
+				"js/background/messaging.js",
+				"js/background/displayutil.js",
+				"js/background/contextmenus.js",
+				"js/shared/operationssupported.js",
 				"js/background/stats.js",
 				"js/background/background.js"
 			]

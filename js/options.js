@@ -11,7 +11,6 @@ ClearOptions = function() {
   }, null);
 };
 
-
 // Note: Cleaned up cruft a lot 6/20/2012.  Look at right before that date to see what used to be out in the wild.
 // Is now async (9/2013)
 InitOptions = function(options) // If defaults change, update manually in optionsui.js
@@ -28,7 +27,7 @@ InitOptions = function(options) // If defaults change, update manually in option
   forge.prefs.get("flickerEnabled", function(val) { options.FlickerEnabled = (val !== null) ? val : true; }, function() { options.FlickerEnabled = true; });
   forge.prefs.get("forceScripting", function(val) { options.ForceScripting = (val !== null) ? val : true; }, function() { options.ForceScripting = true; });
   forge.prefs.get("loggingEnabled", function(val) { options.LoggingEnabled = (val !== null) ? val : false; }, function() { options.LoggingEnabled = false; });
-  forge.prefs.get("msgLoggingEnabled", function(val) { options.MsgLoggingEnabled = (val !== null) ? val : false; }, function() { options.MsgLoggingEnabled = false ; });
+  forge.prefs.get("msgLoggingEnabled", function(val) { options.MsgLoggingEnabled = (val !== null) ? val : false; }, function() { options.MsgLoggingEnabled = false; });
   forge.prefs.get("analyticsEnabled", function(val) { options.AnalyticsEnabled = (val !== null) ? val : true; }, function() { options.AnalyticsEnabled = true; });
   forge.prefs.get("updateOnPopup", function(val) { options.UpdateOnPopup = (val !== null) ? val : true; }, function() { options.UpdateOnPopup = true; });
   forge.prefs.get("autoStopMode", function(val) { options.AutoStopMode = (val !== null) ? val : false; }, function() { options.AutoStopMode = false; });
@@ -66,9 +65,9 @@ SetDevMode = function()
   _savePref("msgLoggingEnabled", true);
   _savePref("analyticsEnabled", false);
 
-	InitOptions(Options);
-	console.log("Success!  Options set to:");
-	console.log(Options);
+  InitOptions(Options);
+  console.log("Success!  Options set to:");
+  console.log(Options);
 };
 
 // Most migration code removed since it would only affect users who hadn't upgraded in over a year
@@ -77,34 +76,9 @@ MigrateOptions = function()
 
   var now = new Date().getTime();
 
-/*
-  if (null === localStorage.getItem('welcomed'))
-  {
-    localStorage.setItem("welcomed", now);
-
-    chrome.tabs.create({
-        'url': "http://www.mutetab.com/welcome.html"
-    }, function(tab) {
-
-    });
-  }
-*/
 //  forge.prefs.get("welcomed", _onCheckWelcomed, function() { _onCheckedWelcomed(null); });
   forge.prefs.get("install_time", _onCheckedInstall, function() { _onCheckedInstall(null); });
 };
-
-/*_onCheckWelcomed = function(val)
-{
-  if (val === null)
-  {
-    chrome.tabs.create({
-        'url': "http://www.mutetab.com/welcome.html"
-    }, function(tab) {
-    });
-    var now = new Date().getTime();
-    _savePref("welcomed", now);
-  }
-};*/
 
 _onCheckedInstall = function(val)
 {
@@ -122,10 +96,9 @@ _onCheckedInstall = function(val)
     }, function(tab) {
     });
 
-
     try {
       _gaq.push(['_trackEvent', 'installed', version]);
-    } catch(ex) {
+    } catch (ex) {
       console.log(ex);
     }
   }

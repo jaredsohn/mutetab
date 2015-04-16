@@ -83,7 +83,7 @@ function GetHtmlForTabInfo(tabInfo, options) {
 	}
 	var output = '<div>'; // tab
 	output += '<div style="text-align: left; float: left">';
-	output += '<img id="collapseexpandfortab_' + tabInfo.TabId + '" class="tabexpandcollapseicon" src="popup/operations/plus2.png" style="cursor:pointer; padding-right: 10px; text-align: left; float: left">';
+	output += '<img id="collapseexpandfortab_' + tabInfo.TabId + '" class="tabexpandcollapseicon" src="img/operations/plus2.png" style="cursor:pointer; padding-right: 10px; text-align: left; float: left">';
 
 	output += '<a id="showTabImage_' + tabInfo.TabId + '" style="cursor:pointer;float: left" href="#" title="Click to show tab">' + '<img style="padding-right: 5px;" class="favicon" src="chrome://favicon/' + tabInfo.FullUrl + '">' + '</a>';
 	//  output += '<img class="favicon" src="http://geticon.org/of/' + tabInfo.FullUrl + '">';

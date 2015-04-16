@@ -135,9 +135,9 @@ GetAudioSourceTypeImageUrl = function(audioSourceType)
 {
 	var fileName = "";
 	if ((audioSourceType === 'undefined') ||(typeof(audioSourceType) === 'undefined'))
-		fileName = chrome.extension.getURL('src/js/popup/audiosourcetypes/unknown.png');
+		fileName = chrome.extension.getURL('src/img/audiosourcetypes/unknown.png');
 	else {
-		fileName = chrome.extension.getURL('src/js/popup/audiosourcetypes/' + audioSourceType.toLowerCase());
+		fileName = chrome.extension.getURL('src/img/audiosourcetypes/' + audioSourceType.toLowerCase());
 		if ((audioSourceType.toLowerCase() === 'dailymotion') || (audioSourceType.toLowerCase() === 'realplayer'))
 			fileName += '.jpg';
 		else

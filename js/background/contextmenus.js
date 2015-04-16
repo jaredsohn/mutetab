@@ -11,9 +11,7 @@ var _contextmenus = function(){
 	var _currentTabContextId;
 	var _otherTabsContextId;
 	var _allTabsContextId;
-	var _optionsContextId;
 	var _operatorForContextMenuDict = {};
-	var _seperatorContextId;
 	var _msgContextId;
 	var _muteAllContextId;
 	var _muteOthersContextId;
@@ -24,17 +22,6 @@ var _contextmenus = function(){
 			_msgContextId = chrome.contextMenus.create({
 				"title": "(Only one dialog at a time)",
 				"contexts": ["page"]
-			});
-
-			_separatorContextId = chrome.contextMenus.create({
-				"type": "separator",
-				"contexts": ["page"]
-			});
-
-			_optionsContextId = chrome.contextMenus.create({
-				"title": "Options",
-				"contexts": ["page"],
-				"onclick": optionsContextMenuClickHandler
 			});
 		});
 	};
@@ -66,17 +53,6 @@ var _contextmenus = function(){
 					"title": "Stop background tabs", //"Mute background tabs...",
 					"contexts": ["page"],
 					"onclick": muteOthersContextMenuClickHandler
-				});
-
-				_separatorContextId = chrome.contextMenus.create({
-					"type": "separator",
-					"contexts": ["page"]
-				});
-
-				_optionsContextId = chrome.contextMenus.create({
-					"title": "Options",
-					"contexts": ["page"],
-					"onclick": optionsContextMenuClickHandler
 				});
 
 				var operationsArray;
@@ -176,11 +152,6 @@ var _contextmenus = function(){
 		catch (ex) {
 			consolelog('PerformOperationForContextMenu - ' + ex);
 		}
-	};
-
-	var optionsContextMenuClickHandler = function(info, tab)
-	{
-		window.open(chrome.extension.getURL("/options.html"));
 	};
 
 	var muteAllContextMenuClickHandler = function(info, tab)

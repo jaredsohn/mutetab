@@ -6,7 +6,7 @@ function consolelog(msg)
    console.log(msg);
 }
 
-window.onload = function(){
+window.onload = function() {
   if (bg.Options.UpdateOnPopup === true) {
     // This code does an updateall every time the popup is shown, so that we get latest information.
     // Would be great if we used mutation events in the contentscript and removed this, especially since this can cause the UI to seem slow.
@@ -35,7 +35,7 @@ function OnDisplayInfo(displayInfo)
   output += '  <b>Tabs that are possibly making sound</b>';
   output += '  <div id="toprightmenu" style="text-align: right; width=25%; float: right; margin-bottom: 6px; }">';
   output += '  <a href="#" id="updateall" class="button" >refresh</a>';
-  output += '  &nbsp;&nbsp;<a id="options"  class="button" href="#">options</a>';
+//  output += '  &nbsp;&nbsp;<a id="options"  class="button" href="#">options</a>';
   output += '  &nbsp;&nbsp;<a href="#" class="button" id="documentation" href="#">documentation</a>';
   output += '  &nbsp;&nbsp;';
   output += '  </div>'; //header
@@ -70,7 +70,7 @@ var CreateEventListeners = function(displayInfo)
   //console.log(displayInfo);
 
   document.getElementById("updateall").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLTABS, Operation.Update, true); } );
-  document.getElementById("options").addEventListener("click", function(evt) { window.open(chrome.extension.getURL("/src/js/options.html")); } );
+//  document.getElementById("options").addEventListener("click", function(evt) { window.open(chrome.extension.getURL("/src/js/options.html")); } );
   document.getElementById("documentation").addEventListener("click", function(evt) { window.open("http://www.mutetab.com/mutetabdoc.html"); } );
   document.getElementById("showblocked").addEventListener("click", function(evt) { bg.Options.ShowBlocked = !bg.Options.ShowBlocked; bg.SaveOptions(bg.Options); location.reload(); } );
   document.getElementById("muteall").addEventListener("click", function(evt) { OperateOnTab(bg.messaging.ALLTABS, Operation.SmartMute, true); } );

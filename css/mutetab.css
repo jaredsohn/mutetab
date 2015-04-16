@@ -1,7 +1,7 @@
 /*
    MuteTab browser extension CSS
 
-   Images can be found (and replaced) in popup/audiosourcetypes, popup/operations, popup/states 
+   Images can be found (and replaced) in img/audiosourcetypes, img/operations, img/states
 
    If you customize this, make sure that you make a backup of your changes.  When the extension is updated, you will need to redo them.
  */
@@ -36,17 +36,17 @@ body {
    color:black;
    text-overflow: ellipsis;
    max-width: 400px;
-   overflow: hidden; 
+   overflow: hidden;
    white-space: nowrap;
-   text-align: left; 
+   text-align: left;
    float: left;
 }
 
-.audiosourcedesc, .audiosourcedescblocked  { 
+.audiosourcedesc, .audiosourcedescblocked  {
    color:black;
    text-overflow: ellipsis;
    max-width: 450px;
-   overflow: hidden; 
+   overflow: hidden;
    white-space: nowrap;
 }
 
@@ -95,7 +95,7 @@ body {
     padding: 6px;
     background-color: #36689b;
     color: #fff;
-    font-size:11px; 
+    font-size:11px;
 }
 .button:hover
 {

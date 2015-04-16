@@ -69,7 +69,7 @@ function Expand(tabId)
 //	console.log("expand");
 	try {
 		document.getElementById("audiosourcesfortab_" + tabId).style.display = 'block';
-		document.getElementById("collapseexpandfortab_" + tabId).src = "popup/operations/minus.png";
+		document.getElementById("collapseexpandfortab_" + tabId).src = "img/operations/minus.png";
 
 		bg.Options.ExpandTabId = tabId;
 		bg.SaveOptions(bg.Options);
@@ -88,7 +88,7 @@ function Collapse(tabId)
 
 	try {
 		document.getElementById("audiosourcesfortab_" + tabId).style.display = 'none';
-		document.getElementById("collapseexpandfortab_" + tabId).src = "popup/operations/plus2.png";
+		document.getElementById("collapseexpandfortab_" + tabId).src = "img/operations/plus2.png";
 	} catch (ex)
 	{
 

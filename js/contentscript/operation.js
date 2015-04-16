@@ -320,7 +320,7 @@ function Block(audioSource, selector)
 
   //TODO: allow clicking to unblock like you can with flashblock
 
-  var iconUrl = chrome.extension.getURL("src/js/favicon.png");
+  var iconUrl = chrome.extension.getURL("src/img/favicon.png");
   var blockDiv =  '<div id="' + audioSource.Id + '_block" style="display: block; text-align: center; width: ' + 1 * width + 'px; height: ' + 1 * height + 'px; top: auto; left: auto; position: static; ">';
   blockDiv +=     '<div style="-webkit-transition-property: opacity; -webkit-transition-duration: 150ms; -webkit-transition-timing-function: ease-out; -webkit-transition-delay: initial; text-align: left; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-top-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-color: rgb(0, 0, 0); width: 100%; height: 100%; background-color: rgba(193, 217, 244, 0.496094); background-image: url(' + iconUrl + '); background-size: 50px 50px; opacity: 1; background-repeat: no-repeat;  "></div>';
   blockDiv +=     '</div>';
