@@ -111,7 +111,7 @@ var _messaging = function() {
     try {
       if (scope.Port !== null)
       {
-        consolelog("****Updating background page with audio source information to port " + scope.Port.portId_);
+        consolelog("****Updating background page with audio source information to port " + scope.Port.name);
         consolelog(tabInfo);
         scope.Port.postMessage({
           request: tabInfo
@@ -143,7 +143,7 @@ var _messaging = function() {
     tabInfo.WindowId = scope.WindowId;
     tabInfo.TabPid = scope.TabPid;
 
-    tabInfo.Frames[0].IFrameId = document.URL; //TODO: concerned that this is not necessarily unique
+    tabInfo.Frames[0].IFrameId = document.URL + "_" + Math.floor(Math.random() * 100000000).toString(); // now ensuring this is unique (but it also means that if reloaded, the id will likely differ)
 
     var portName = tabInfo.TabId + "_" + tabInfo.Frames[0].IFrameId;
     if (portName.length > 80) // Really long portnames are annoying to debug and the IFrameId is only there to sometimes make it easier to distinguish.

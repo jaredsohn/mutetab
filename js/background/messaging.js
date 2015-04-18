@@ -7,17 +7,32 @@
 
 function consolelog(msg)
 {
-  if (Options.LoggingEnabled === true)
-    console.log(msg);
+  if (Options.LoggingEnabled === true) {
+    var args = Array.prototype.slice.call(arguments);
+    if (args.length > 1)
+      console.log(args.reduce(function(a, b) { return a.concat(b); }));
+    else if (args.length === 1)
+      console.log(args[0]);
+  }
 }
 function consolewarn(msg)
 {
-  if (Options.LoggingEnabled === true)
-    console.warn(msg);
+  if (Options.LoggingEnabled === true) {
+    var args = Array.prototype.slice.call(arguments);
+    if (args.length > 1)
+      console.warn(args.reduce(function(a, b) { return a.concat(b); }));
+    else if (args.length === 1)
+      console.log(args[0]);
+  }
 }
 function msgconsolelog(msg) {
-  if (Options.MsgLoggingEnabled === true)
-    console.log(msg);
+  if (Options.MsgLoggingEnabled === true) {
+    var args = Array.prototype.slice.call(arguments);
+    if (args.length > 1)
+      console.log(args.reduce(function(a, b) { return a.concat(b); }));
+    else if (args.length === 1)
+      console.log(args[0]);
+  }
 }
 
 var RequestInfo = function()
@@ -91,7 +106,7 @@ var _messaging = function() {
       scope.TabLruList.splice(0, 0, tabId); // Add current tab at the beginning of the list.
     }
     catch (ex) {
-      consolewarn('MarkVisited - ' + ex);
+      console.warn('MarkVisited -', ex);
     }
   };
 
@@ -143,7 +158,7 @@ var _messaging = function() {
   this.OnConnect = function(port) {
 //    return; //TODO: memorytest
 
-    msgconsolelog('connect - ' + port.portId_ + "_" + port.name);
+    msgconsolelog('connect - ', port.name);
 
     port.onMessage.addListener(function(msg) {
       //consolelog("OnMessage");
@@ -163,15 +178,15 @@ var _messaging = function() {
 
         //if (!ExtDialogBg.ActOnResponse(msg.request))
         {
-          if (scope._messageIsValid(msg, port.portId_)) {
+          if (scope._messageIsValid(msg, port.name)) {
             for (frameIndex = 0; frameIndex < msg.request.Frames.length; frameIndex++) {
-              msg.request.Frames[frameIndex].PortId = port.portId_;
+              msg.request.Frames[frameIndex].PortName = port.name;
               scope._portDict[msg.request.Frames[frameIndex].PortName] = port;
             }
             scope._store(msg.request);
           }
           else {
-            consolelog("Not valid:" + port.portId_);
+            consolelog("Not valid:" + port.name);
             consolelog(msg);
           }
         };
@@ -186,9 +201,9 @@ var _messaging = function() {
     port.onDisconnect.addListener(function(port) {
       if ((port.sender !== null) && (typeof port.sender !== 'undefined')) {
         if ((port.sender.tab !== null) && (typeof port.sender.tab !== 'undefined')) {
-          msgconsolelog('disconnect - ' + port.portId_ + "_" + port.name);
+          msgconsolelog('disconnect - ', port.name); //msgconsole
           consolelog(port);
-          scope._removeFrame(port.sender.tab.id, port.portId_);
+          scope._removeFrame(port.sender.tab.id, port.name);
         }
       }
     });
@@ -196,8 +211,8 @@ var _messaging = function() {
 
   this.OnRemoved = function(tabId) {
     consolelog("OnRemoved(" + tabId + ")");
-    //console.log(tabId);
-    //console.log(scope.TabInfoDict);
+    //consolelog(tabId);
+    //consolelog(scope.TabInfoDict);
     delete scope.TabInfoDict[tabId];
 
     var i;
@@ -246,7 +261,7 @@ var _messaging = function() {
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Discard messages if received out of order.  Should happen less frequently since contentscript now queues up messages before sending
-  this._messageIsValid = function(msg, portId) {
+  this._messageIsValid = function(msg, portName) {
     if (msg.request.Frames[0].FrameRequestId <= 0) // New frame
       return true;
 
@@ -257,7 +272,7 @@ var _messaging = function() {
     if ((typeof tabInfo !== 'undefined') && (tabInfo !== null)) {
       var frameIndex;
       for (frameIndex = 0; frameIndex < tabInfo.Frames.length; frameIndex++) {
-        if (tabInfo.Frames[frameIndex].PortId === portId) {
+        if (tabInfo.Frames[frameIndex].PortName === portName) {
           frameFound = true;
           //alert("is: " + (msg.request.Frames[0].FrameRequestId));
           //alert("was: " + (tabInfo.Frames[frameIndex].FrameRequestId));
@@ -275,9 +290,9 @@ var _messaging = function() {
     }
     if ((isValid || (frameFound === false)) === false)
     {
-      consolelog("not valid. msg, portid, tabinfo:");
+      consolelog("not valid. msg, portname, tabinfo:");
       consolelog(msg);
-      consolelog(portId);
+      consolelog(portName);
       consolelog(tabInfo);
     }
 
@@ -285,13 +300,13 @@ var _messaging = function() {
   };
 
   this._onRequest = function(request, sender, sendResponse, sendResponseFunc) {
-    //console.log("**************************** onrequest *********************");
-    //console.log(request);
-    //console.log(request.TabId);
+    //consolelog("**************************** onrequest *********************");
+    //consolelog(request);
+    //consolelog(request.TabId);
     //if ((typeof sender !== 'undefined') && (typeof sender.tab !== 'undefined'))
-    //  console.log(sender.tab.id);
-    //console.log(sendResponse);
-    //console.log(sendResponseFunc);
+    //  consolelog(sender.tab.id);
+    //consolelog(sendResponse);
+    //consolelog(sendResponseFunc);
 
     request.IsSync = (sendResponseFunc !== null);
 
@@ -317,8 +332,8 @@ var _messaging = function() {
           request.MsgLoggingEnabled = Options.MsgLoggingEnabled;
         }
       }
-      //console.log("here1");
-      //console.log(request);
+      //consolelog("here1");
+      //consolelog(request);
 
       if (request.Operation !== Operation.GetTabInfo) {
         consolelog("____creating request for operation " + request.Operation);
@@ -374,7 +389,7 @@ var _messaging = function() {
           continue;
         }
 
-        consolelog(tabList[tabIndex].id + " - " + tabList[tabIndex].url);
+        consolelog(tabList[tabIndex].id, " - ", tabList[tabIndex].url);
 
         tabIdList.push(tabList[tabIndex].id);
       }
@@ -386,8 +401,8 @@ var _messaging = function() {
     //alert('_operateOnAll');
     //alert(tabIdList);
     //alert(tabIdList.length);
-    //console.log("operateontabidlist operateonallrequest:");
-    //console.log(operateOnAllRequest);
+    //consolelog("operateontabidlist operateonallrequest:");
+    //consolelog(operateOnAllRequest);
 
     if ((typeof tabIdList === 'undefined') || (tabIdList === null))
       tabIdList = [];
@@ -396,7 +411,7 @@ var _messaging = function() {
     var frameCount = 0;
 
     //  _pendingPortRequests[operateOnAllRequest.RequestId] = tabIdList.length;
-    //  consolelog('for request ' + operateOnAllRequest.RequestId + ' - pending = ' + tabIdList.length);
+    //  consolelog('for request', operateOnAllRequest.RequestId, '- pending =', tabIdList.length);
     for (tabIndex = 0; tabIndex < tabIdList.length; tabIndex++) {
       //alert(tabIndex);
 //      try {
@@ -410,10 +425,10 @@ var _messaging = function() {
         scope._handleOperationRequest(request);
 //      }
 //      catch (ex) {
-//        alert('_operateOnAll - ' + tabIndex + ' - ' + ex);
+//        alert('_operateOnAll - ', tabIndex, ' - ', ex);
 //      }
 
-      //consolelog('total # of frames prior to update: ' + frameCount);
+      //consolelog('total # of frames prior to update:', frameCount);
     }
 
     scope._cleanUpForRequest(operateOnAllRequest.IsSync, operateOnAllRequest.RequestId);
@@ -440,7 +455,7 @@ var _messaging = function() {
       }
       else {
 
-        //console.log(request.Operation);
+        //consolelog(request.Operation);
         //alert('_handleoperationrequest(not alltabs)');
         switch (operation) {
           case Operation.Close:
@@ -465,7 +480,7 @@ var _messaging = function() {
             scope.MarkVisited(request.TabId);
             break;
           default:
-            //consolelog("for request " + request.RequestId + " - " + request.TabId + ' - _handleOperationRequest frame count: ' + request.Frames.length);
+            //consolelog("for request " + request.RequestId + " - " + request.TabId + ' - _handleOperationRequest frame count:', request.Frames.length);
 
             var frameCount = Object.size(request.Frames); // TODO: not sure why I need to do this instead of request.frames.length
 
@@ -482,10 +497,10 @@ var _messaging = function() {
 
               //TODO: this code commented out in 9/13 because it would freeze Chrome (due to recent Chrome changes).  Lots of other dead code injection attempts removed (find in github)
               //consolelog("INJECTION!");
-              //InjectJS("var DisallowScriptChangesOverride = true; /*console.log('injected');*/", request.TabId, scope.InjectContentScriptsAsync, request.TabId);
+              //InjectJS("var DisallowScriptChangesOverride = true; /*consolelog('injected');*/", request.TabId, scope.InjectContentScriptsAsync, request.TabId);
             }
             else {
-//                console.log("***request.Frames size = " + Object.size(request.Frames));
+//                consolelog("***request.Frames size = " + Object.size(request.Frames));
 
 //                consolelog("iterating frames!");
               for (frameIndex = frameCount - 1; frameIndex >= 0; frameIndex--) {
@@ -504,20 +519,20 @@ var _messaging = function() {
                     } catch (ex)
                     {
                       // We remove ports that we can't send messages to.  Hopefully this only happens upon a crash (when this is desired behavior.)
-                      scope._removeFrame(request.TabId, request.Frames[frameIndex].PortId);
+                      scope._removeFrame(request.TabId, request.Frames[frameIndex].PortName);
                     }
                     if (requestInfo !== null)
                       requestInfo.PendingPortRequests++;
-                  //consolelog('updated pendingportrequests for request ' + request.RequestId + ' - ' + _pendingPortRequests[request.RequestId]);
+                  //consolelog('updated pendingportrequests for request', request.RequestId, ' -', _pendingPortRequests[request.RequestId]);
                   }
                   else // this shouldn't happen
                   {
-                    msgconsolelog('no port for ' + request.Frames[frameIndex].PortName);
+                    consolelog('no port for', request.Frames[frameIndex].PortName); //msgconsole
                   }
                 }
                 catch (ex) {
-                  msgconsolelog("for request " + request.RequestId + " - " + request.TabId + " - _handleOperationRequest - " + request.Frames[frameIndex].PortName + ' - ' + ex);
-                  scope._removeFrame(request.TabId, request.Frames[frameIndex].PortId); //TODO
+                  consolelog("for request " + request.RequestId + " - " + request.TabId + " - _handleOperationRequest - " + request.Frames[frameIndex].PortName + ' -', ex); //msgconsole
+                  scope._removeFrame(request.TabId, request.Frames[frameIndex].PortName); //TODO
                 }
               }
             //chrome.tabs.sendRequest(request.TabId, request, function(response) { });
@@ -532,16 +547,16 @@ var _messaging = function() {
 //    }
   };
 
-  this._removeFrame = function(tabId, portId) {
-    consolelog("_removeFrame(" + tabId + ", " + portId + ")");
+  this._removeFrame = function(tabId, portName) {
+    consolelog("_removeFrame(" + tabId + ", " + portName + ")");
     var tabInfo = scope.TabInfoDict[tabId];
     //consolelog("Remove frame for tabId " + tabId);
     //consolelog(tabInfo);
-    //consolelog(portId);
+    //consolelog(portName);
     if ((typeof tabInfo !== 'undefined') && (tabInfo !== null)) {
       var frameIndex;
       for (frameIndex = 0; frameIndex < tabInfo.Frames.length; frameIndex++) {
-        if (tabInfo.Frames[frameIndex].PortId === portId) {
+        if (tabInfo.Frames[frameIndex].PortName === portName) {
           try {
             delete scope._portDict[tabInfo.Frames[frameIndex].PortName];
           } catch (ex)
@@ -590,18 +605,18 @@ var _messaging = function() {
   };
 
   this._checkIfAllResponsesOccurred = function(requestId) {
-    //consolelog('checking status...' + _operationCallBackIntervalCount);
+    //consolelog('checking status...', _operationCallBackIntervalCount);
 
     var requestInfo = scope._getRequestInfo(requestId);
     var done = false;
 
     if (requestInfo.PendingPortRequests <= 0) {
-      msgconsolelog('for request ' + requestId + ': all responses received');
+      consolelog('for request', requestId, ': all responses received'); //msgconsole
       done = true;
     }
     if ((done === false) && (requestInfo.OperationCallBackIntervalCount <= 0))
     {
-      msgconsolelog('for request ' + requestId + ': timing out');
+      consolelog('for request', requestId, ': timing out'); //msgconsole
       done = true;
     }
     if (done === true)
@@ -612,12 +627,12 @@ var _messaging = function() {
         }
       }
       catch (ex) {
-        consolelog('_checkIfAllResponsesOccurred: ' + ex);
+        consolelog('_checkIfAllResponsesOccurred:', ex);
       }
       scope._cleanUpForRequest(false, requestId);
     }
     else {
-      msgconsolelog('for request ' + requestId + ' - remaining requests = ' + requestInfo.PendingPortRequests);
+      consolelog('for request', requestId, '- remaining requests =', requestInfo.PendingPortRequests); //msgconsole
       requestInfo.OperationCallBackIntervalCount--;
     }
   };
@@ -653,7 +668,7 @@ var _messaging = function() {
     {
       clearInterval(requestInfo.SyncIntervalName);
       delete scope._requestInfoDict[requestId];
-      consolelog("clearing request #" + requestId);
+      consolelog("clearing request #", requestId);
       consolelog(scope._requestInfoDict[requestId]);
     } else
     {
@@ -702,8 +717,8 @@ var _messaging = function() {
   this._store = function(tabInfo) {
     scope._cleanUpTabInfo(tabInfo);
 
-    msgconsolelog("_____store - " + tabInfo.TabPageUrl + " - " + tabInfo.Frames[0].PortId + "_" + tabInfo.Frames[0].PortName + ":");
-    msgconsolelog(tabInfo);
+    consolelog("_____store - " + tabInfo.TabPageUrl + " - " + tabInfo.Frames[0].PortName + ":"); //msgconsole
+    consolelog(tabInfo); //msgconsole
     if (scope._store_busy === true) // check if we have multiple 'threads' running here simultaneously.
     {
       consolelog("busy!"); // this should only happen if alerts are added to this method, an uncaught exception occurs, or due to debugging (i.e. showing an 'alert' dialog or using a breakpoint)
@@ -758,9 +773,9 @@ var _messaging = function() {
               try {
 //                consolelog(storedTabInfo.Frames[storedFrameIndex].IFrameId);
 //                consolelog((tabInfo.Frames[frameIndex].IFrameId).trim());
-                if (storedTabInfo.Frames[storedFrameIndex].PortId === tabInfo.Frames[frameIndex].PortId) {
+                if (storedTabInfo.Frames[storedFrameIndex].PortName === tabInfo.Frames[frameIndex].PortName) {
 //                  consolelog('*');
-//                  consolelog('removing for tabid ' + tabInfo.TabId + ' and port ' + tabInfo.Frames[frameIndex].PortId);
+//                  consolelog('removing for tabid ' + tabInfo.TabId + ' and port ' + tabInfo.Frames[frameIndex].PortName);
 //                  consolelog('count was: ' + storedTabInfo.Frames.length);
                   consolelog("Replacing frame ");
                   consolelog(storedTabInfo.Frames[storedFrameIndex]);
@@ -779,7 +794,7 @@ var _messaging = function() {
                 }
               }
               catch (ex) {
-                consolewarn('store removal exception - ' + ex);
+                console.warn('store removal exception - ', ex);
               }
             }
 
@@ -806,10 +821,9 @@ var _messaging = function() {
 
       scope._store_busy = false;
       //consolelog('store end');
-
     }
     catch (ex) {
-      consolewarn('Store - ' + ex); // + '-' + lineMarker);
+      console.warn('Store - ', ex); // + '-' + lineMarker):
     }
   };
 
