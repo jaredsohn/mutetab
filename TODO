@@ -1,0 +1,5 @@
+-- integrate linting with watching
+-- Add back play/pause support
+-- Fix TODOs in code
+-- Don't clip tooltips at bottom of popup
+-- Fix behavior for restoring the proper tabs when ducking is enabled and privacy mode/disable automuting was used (tests are broken)

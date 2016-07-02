@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+	<title>MuteTab - Options</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../css/prefs.css" />
+
+	<script type="text/javascript" src="../js/vendor/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="../js/options-bundle.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-text container">
+        <h3>MuteTab - Options</h3>
+      </div>
+    </div>
+
+    <div class="container">
+    	<form id="prefs_form">
+        <br>
+        <br>
+        <br>
+        <br>
+        <div id="default_muting_behavior">
+          <div class="radio">
+            <h4>Default muting behavior</h4>
+            <label><input type="radio" name="default_muting_behavior" id="mute_by_default">Muted</input></label><br>
+            <label><input type="radio" name="default_muting_behavior" id="bg_mute_by_default">Background muted</input></label><br>
+            <label><input type="radio" name="default_muting_behavior" id="unmute_by_default">Unmuted</input></label><br>
+            <br>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" id="muted_remember_same_domain">Remember muted when changing to a page on the same domain</input></label><br>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" id="incognito_mute_by_default">Incognito tabs muted by default</input></label><br>
+          </div>
+          <div id="no_incognito_warning" style="color:red; display:none">Warning: you must check 'Allow in incognito' in the extensions list for this to work.</div>
+          <hr>
+        </div>
+
+        <div id="blacklist_div" class="textbox">
+          <h4>Blacklist: Mute these sites on load.</h4><label><small><div class="section_desc">List is checked when default muting behavior is set to unmuted (via unmuted or background muted [foreground tab only]). This list can also be updated via the popup dropdown or the context menu.</div></small></label><br><div id="blacklist_editor"></div>
+          <hr>
+        </div>
+
+        <div id="whitelist_div" class="textbox">
+          <h4>Whitelist: Do not mute these sites on load.</h4><label><small><div class="section_desc">List is checked when a tab's default muting behavior is set to muted (via muted or background muted [background tabs only]). This list can also be updated via the popup dropdown or the context menu.</div></small></label><br><div id="whitelist_editor"></div>
+          <hr>
+        </div>
+
+        <div class="textbox">
+          <h4>Music sites list: Leave these sites alone when muting tabs.</h4><label><small><div class="section_desc">If a site is on the music list, it will not be muted due to a default muting behavior or by the 'Mute all tabs' and 'Mute background tabs' commands, but will still be muted when privacy mode is active. This list can also be updated via the context menu.</div></small></label><br><div id="musiclist_editor"></div>
+          <hr>
+        </div>
+
+        <div class="music_ducking_section">
+          <h4>Music ducking (Experimental)</h4>
+          <div id="enable_ducking_div" class="checkbox">
+            <label id="enable_ducking_label"><input type="checkbox" id="enable_ducking">Enable music ducking</input></label><br><br>
+            <div><label title="Wait before we duck music. Note that two of these seconds are used to wait for the Chrome audio indicator to disappear."><input type="checkbox" id="enable_min_time_before_ducking">
+              Wait before ducking music (in s)&nbsp;&nbsp;&nbsp;<input type="text" id="min_time_before_ducking">
+            </input></label></div><br>
+            <div><label title="This timeout affects unsupported non-HTML5 players and sites with playlists only. Otherwise, we just wait until it is no longer playing and the audible indicator is gone.  Again, two seconds is used to wait for the audio indicator to disappear.">
+              Wait before restoring music (in s)&nbsp;&nbsp;<input type="text" id="min_time_before_unducking">
+            </label></div>
+            <hr>
+          </div>
+
+          <div id="manualduckinglist_div" class="textbox">
+            <h4>Manual ducking controls list: Don't duck these sites during silence.</h4><label><small><div class="section_desc">
+            Some sites play sound continuously but sometimes have large gaps. Include those sites
+            on this list to prevent your background music from ducking in and out during those gaps. These sites will still get ducked when another tab plays sound, but if it goes silent for awhile you will need to manually intervene. This list can also be updated via the context menu.</div></small></label><br><div id="manualduckinglist_editor"></div>
+          </div>
+          <hr>
+        </div>
+
+        <div id="keyboard_shortcuts">
+          <h4>Keyboard shortcuts</h4></label><small>Configure shortcuts by going to chrome://extensions and clicking on 'Keyboard shortcuts' at the bottom of the page.
+        </div>
+
+        <div id="dropdownUserInterface" style="display:none">
+          <h4>Dropdown user interface</h4>
+          <div class="checkbox">
+              <label><input type="checkbox" id="show_other_tabs">Include all tabs (not just those related to sound)</input></label><br>
+          </div>
+          <br>
+        </div>
+
+        <br><br><br>
+
+    		<button id="save" class="status-button">Save</button>&nbsp;&nbsp;
+    		<button id="defaults" class="status-button">Restore defaults</button>&nbsp;&nbsp;
+        <br><br>
+      </form>
+      <br>
+
+      <div class="url-list-editor-template">
+        <form action="#">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <input class="form-control urlTextBox" placeholder="www.cnn.com" type="text" value="" class="listTextbox">
+              </input>
+            </span>
+            <span class="input-group-btn">
+              <button class="btn btn-default addDomainButton" type="submit">Add Domain</button>
+            </span>
+          </div>
+        <br>
+          <select class="listSelect" size="6" multiple="">
+          </select>
+          <button class="btn removeDomainButton" role="button">
+            <span>Remove selected</span>
+          </button>
+          <div class="editButton">
+            <a class="rawFiltersButton" href="#">
+              <span>Edit list as raw text</span>
+            </a>
+          </div>
+          <div class="editRawSection">
+            <div class="textAreaDiv">
+              <textarea class="rawTextArea"></textarea>
+            </div>
+            <div>
+              <button class="importRawButton" role="button">
+                <span>Apply changes</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div><!-- /.container -->
+
+    <script src="../js/vendor/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,40 +1,45 @@
-MuteTab Chrome extension
-=======
+MuteTab
+========================
 
-MuteTab is a Chrome extension that helps you manage the sound coming from tabs in Google Chrome. It helps you to narrow down which tab(s) are making sounds and allows stopping them (and pausing if YouTube, HTML5 Video/Audio, or QuickTime), including an option to do so automatically with background tabs.  It does not detect web audio.
+MuteTab is a Chrome extension that gives you enhanced control over your browser's sound.  Features include mute by default, blacklists, and an experimental music ducking feature.  More info at [mutetab.com](http://www.mutetab.com/new).
 
-###Documentation/download
-http://www.mutetab.com/
 
-###Points of interest
+Installing from Source
+----------------------
 
-People looking to reuse code may find the following pieces of highest interest:
+ * Visit `chrome://extensions/`
+ * Ensure `Developer mode` is checked
+ * Click `Load unpacked extension...`
+ * Locate and select the directory with the `manifest.json` file in it
 
-* js/contentscript/objectembed.js: Interpret the source of a plug-in to determine which parameters are set or change them.
-* js/contentscript/messaging_contentscript.js, background/messaging.js: framework for keeping track of data related to open tabs
+Hacking
+-------
 
-###Build instructions
+You must have [Node.js](http://nodejs.org/) installed to build the extension.
 
-First get the files onto your computer.  Clone [OpenForge](https://github.com/trigger-corp/browser-extensions) into mutetab_src and follow its instructions for setting it up.
+1. Install the dependencies: `npm install`
+2. Build the extension from `src/js` into `build/js`:
 
-Then clone this project and a utility ([mergejson](https://github.com/jaredsohn/mergejson)) into the proper folders by running the following commands:
+  * Build once: `npm run build`
 
-```
-cd mutetab_src
-git clone https://github.com/jaredsohn/mutetab.git src
-git clone https://github.com/jaredsohn/mergejson.git mergejson
-```
+  * Build continuously as files change: `npm start`
 
-Finally, run the following commands (including them in a script is recommended, since you'll do it every time you build.)
+The entry point for the extension's background page is `src/js/background.js`. It is responsible for communicating the list of open tabs to the client when requested.
 
-```
-source ./python-env/bin/activate
-rm -rf development/chrome
-forge-extension build chrome
-python mergejson/mergejson.py development/chrome/manifest.json src/mutetab_chrome.json development/chrome/manifest.json
-```
+The entry point for the extension's front-end is `src/js/client.jsx`. The client is written using [React](http://facebook.github.io/react/).
 
-You can run it by going to chrome://extensions, checking Developer mode, clicking "Load unpacked extension...", and choosing the development/chrome folder.
+Both these files are bundled using [Browserify](http://browserify.org/) (running a JSX transform for the client scripts) into `build/js`. At runtime, the extension uses only files from `build` and `vendor`.
 
-If you want to donate, you can do so ([here](http://www.mutetab.com/donate.html)).
+Tests
+-----
+Run the test suite by enabling the extension and going to chrome-extension://jopkojhkkeglfnolgoojbfdoimpnllfd/build/html/test.html. Note that running the tests will clear out your preferences and that you will need to click 'Restore defaults' or restart the extension before using it again. (There are some hidden settings that will cause the extension to behave abnormally.)
+
+Licensing
+---------
+
+This code is licensed MIT.
+
+The structure and UI started as a fork of [Chrome Fast Tab Switcher](https://github.com/BinaryMuse/chrome-fast-tab-switcher), which is Copyright (c) 2014 Michelle Tilley under the MIT license.
+
+It also includes a large amount of [Streamkeys](https://github.com/berrberr/streamkeys) code (currently unused) which is Copyright (c) 2014 Alex Gabriel under the MIT license.
 
