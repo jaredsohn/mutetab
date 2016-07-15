@@ -9,7 +9,7 @@
     "128": "build/img/favicon.png"
   },
   "permissions": [
-    "tabs", "storage", "contextMenus", "http://*/*", "https://*/*", "notifications", "tabCapture"
+    "tabs", "storage", "contextMenus", "tabCapture"
   ],
   "browser_action": {
       "default_title": "MuteTab",
