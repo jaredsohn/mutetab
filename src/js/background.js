@@ -489,7 +489,7 @@ let onCommandAsPromise = function(command) {
     case 'pause_unducked': return pauseMusic(unduckedTabId_, 'Paused by user as \'unducked tab\' via MuteTab context menu.');
     case 'close_unducked': return windowManager.closeTab(unduckedTabId_);
     case 'show_unducked': return windowManager.switchToTab(unduckedTabId_);
-    case 'mute_or_pause_unducked': return muteOrPauseUnducked();
+    case 'mute_unducked': return muteOrPauseUnducked();
 
     default: console.warn('Unsupported command requested: ' + command);
   }

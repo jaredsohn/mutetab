@@ -47,8 +47,8 @@
     "show_unducked": {
       "description": "Show unducked"
     },
-    "mute_or_pause_unducked": {
-      "description": "Mute or pause unducked"
+    "mute_unducked": {
+      "description": "Mute unducked"
     }
   },
   "options_page": "build/html/options.html",

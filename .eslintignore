@@ -1,0 +1,4 @@
+build/***
+src/js/DefaultController.js
+src/js/background/music_controllers/*
+src/js/client/string_spanner.js
