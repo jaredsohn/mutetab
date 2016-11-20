@@ -22784,8 +22784,6 @@ module.exports = function (scorer) {
 },{}],185:[function(require,module,exports){
 "use strict";
 
-var ReactDom = require('react-dom');
-
 var hideDucking_ = false;
 
 module.exports = React.createClass({
@@ -22971,26 +22969,6 @@ module.exports = React.createClass({
     }
   },
 
-  /*  componentDidUpdate: function() {
-      if (this.props.selected) {
-        this.ensureVisible();
-      }
-    },*/
-
-  /*
-    ensureVisible: function() {
-      let node = ReactDom.findDOMNode(this);
-      let myTop = node.offsetTop;
-      let myBottom = myTop + node.offsetHeight;
-      let containerScrollTop = this.props.containerScrollTop;
-      let containerScrollBottom = containerScrollTop + this.props.containerHeight;
-  
-      if (myTop < containerScrollTop) this.props.setContainerScrollTop(myTop);
-      if (myBottom > containerScrollBottom) {
-        this.props.setContainerScrollTop(containerScrollTop + myBottom - containerScrollBottom);
-      }
-    },
-  */
   getTabTitle: function getTabTitle(tab) {
     return tab.title;
   },
@@ -23085,7 +23063,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react-dom":28}],186:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-unused-vars*/

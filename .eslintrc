@@ -172,7 +172,8 @@
 
       ////////// Extra React/JSX ///////
       "react/no-multi-comp": 1,
-
+      "react/react-in-jsx-scope": 0,
+      "react/jsx-space-before-closing": 0,
       ////////// Legacy //////////
 
       "max-depth": 0,       // specify the maximum depth that blocks can be nested (off by default)

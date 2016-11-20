@@ -1,5 +1,3 @@
-let ReactDom = require('react-dom');
-
 let hideDucking_ = false;
 
 module.exports = React.createClass({
