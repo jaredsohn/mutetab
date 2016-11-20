@@ -1,6 +1,6 @@
 {
   "name": "MuteTab",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
