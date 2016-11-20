@@ -21,6 +21,7 @@ let URL_CHANGE_WAIT = 10;
 let DUCKED_TIMEOUT_EXTRA_WAIT = 60; // wait this additional length before clearing something that is ducked.  Otherwise it gets unducked too quickly.
 
 let hideDucking_ = false;
+let injectingEnabled_ = false;
 
 // globals
 let prefs_ = {}; // User preferences
@@ -931,6 +932,10 @@ let updateContextMenus = function() {
 
     return windowManager.getCurrentTab()
     .then(function(currentTabInfo) {
+      if (currentTabInfo === null) {
+        console.error("currentTabInfo is null");
+        return Q.when(null);
+      }
       // console.log("updateContextMenus", currentTabInfo.id, currentTabInfo.url, unduckedTabId_);
 
       if (updateContextMenusBusy_) {
@@ -1473,6 +1478,10 @@ let muteOrPauseUnducked = function() {
 };
 
 let injectMusicApi = function(tabId, url, injectDefault) {
+  if (!injectingEnabled_) {
+    return Q.when(null);
+  }
+
   // Note: it is now okay to inject multiple times into the same tab.
   // We do this rarely and the script makes sure it doesn't run more
   // than once (used to check here if it already injected and bail if so)
