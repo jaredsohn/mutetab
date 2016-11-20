@@ -395,41 +395,55 @@ let onUpdated = function(tabId, changeInfo, tab) {
 };
 
 let onActivated = function(activeInfo) {
-  console.log("onActivated", activeInfo.windowId, windowManager.getExtensionWindowIdSync());
-
-  if (activeInfo.windowId === windowManager.getExtensionWindowIdSync())
-    return;
-
-  moveToFrontOfUnduckingOrder(activeInfo.tabId);
-
-  // if (logTypeEnabled_.events)
-  //   console.log(activeInfo.tabId, "onActivated");
-
-  let prevTabId = windowManager.getLastTabIdSync();
-  windowManager.setLastWindowId(activeInfo.windowId);
-  windowManager.setLastTabId(activeInfo.tabId);
-
-  windowManager.getTabInfo(activeInfo.tabId)
-  .then(function(tabInfo) {
-    setState(activeInfo.tabId, 'domainCached', getDomain(tabInfo.url));
-
-    // console.log("just tabbed away from (will mute if not music)", prevTabId);
-    if ((!prefs_.disableAutomuting) && (prefs_.muteBackgroundTabs)) {
-      let isMusic = prefsStore.domainInList(getState(prevTabId, 'domainCached'), prefs_.musiclist);
-      console.log(prevTabId, 'bgdebug data', prefs_.disableAutomuting, prefs_.muteBackgroundTabs, getState(prevTabId, 'domainCached'), prefs_.musiclist, isMusic);
-
-      if (!isMusic)
-        updateMuted(prevTabId, true, {}, 'Background muted by default.').done();
+  windowManager.getCurrentTab()
+  .then(function(currentTab) {
+    console.log("onActivated", activeInfo, currentTab);
+    if ((currentTab === null) || (currentTab.windowId !== activeInfo.windowId)) {
+      console.log("onActivated - ignoring since not in active window", activeInfo, activeInfo.windowId, windowManager.getExtensionWindowIdSync());
+      return;
     }
 
-    if (getState(activeInfo.tabId, 'ducked')) {
-      let timeToCheck = Math.min(getCountdownForUnducking(activeInfo.tabId, false), prefs_.minTimeBeforeUnducking);
-      addMaybeAudibleCheck(activeInfo.tabId, timeToCheck, true);
+    console.log("onActivated", activeInfo, activeInfo.windowId, windowManager.getExtensionWindowIdSync());
 
-      unduckTabIds([activeInfo.tabId]).done();
+    if (activeInfo.windowId === windowManager.getExtensionWindowIdSync())
+      return;
+
+    let prevTabId = windowManager.getLastTabIdSync();
+
+    if (activeInfo.tabId === prevTabId) {
+      return;
     }
 
-    updateContextMenus();
+    moveToFrontOfUnduckingOrder(activeInfo.tabId);
+
+    // if (logTypeEnabled_.events)
+    //   console.log(activeInfo.tabId, "onActivated");
+
+    windowManager.setLastWindowId(activeInfo.windowId);
+    windowManager.setLastTabId(activeInfo.tabId);
+
+    windowManager.getTabInfo(activeInfo.tabId)
+    .then(function(tabInfo) {
+      setState(activeInfo.tabId, 'domainCached', getDomain(tabInfo.url));
+
+      // console.log("just tabbed away from (will mute if not music)", prevTabId);
+      if ((!prefs_.disableAutomuting) && (prefs_.muteBackgroundTabs)) {
+        let isMusic = prefsStore.domainInList(getState(prevTabId, 'domainCached'), prefs_.musiclist);
+        console.log(prevTabId, 'bgdebug data', prefs_.disableAutomuting, prefs_.muteBackgroundTabs, getState(prevTabId, 'domainCached'), prefs_.musiclist, isMusic);
+
+        if (!isMusic)
+          updateMuted(prevTabId, true, {}, 'Background muted by default.').done();
+      }
+
+      if (getState(activeInfo.tabId, 'ducked')) {
+        let timeToCheck = Math.min(getCountdownForUnducking(activeInfo.tabId, false), prefs_.minTimeBeforeUnducking);
+        addMaybeAudibleCheck(activeInfo.tabId, timeToCheck, true);
+
+        unduckTabIds([activeInfo.tabId]).done();
+      }
+
+      updateContextMenus();
+    });
   });
 };
 
