@@ -54,20 +54,18 @@ module.exports = React.createClass({
           <span className='tooltip'>Unmute all tabs</span>
         </span>
 
-        <span className="status-buttons-right">
-          <span id="set_privacy_mode" className={"mrxl " + ((this.props.disableAutomuting || this.props.privacyModeToggleInProgress) ? "status-button-disabled" : "status-button")} onClick={this.handleChangePrivacyMode}>
-            <span>
-              {privacyModeCheckbox}<span className="keyboard-shortcut">P</span>rivacy Mode
-            </span>
-            <span className='tooltip right'>Turn on to mute all tabs (including music sites). Cannot be set when automuting is disabled.</span>
+        <span id="set_privacy_mode" className={"mrxl " + ((this.props.disableAutomuting || this.props.privacyModeToggleInProgress) ? "status-button-disabled" : "status-button")} onClick={this.handleChangePrivacyMode}>
+          <span>
+            {privacyModeCheckbox}<span className="keyboard-shortcut">P</span>rivacy Mode
           </span>
+          <span className='tooltip right'>Turn on to mute all tabs (including music sites). Cannot be set when automuting is disabled.</span>
+        </span>
 
-          <span id="disable_automuting" className={"mrxl " + (this.props.privacyMode ? "status-button-disabled" : "status-button")} onClick={this.handleChangeDisableAutomuting}>
-            <span>
-              {disableAutomutingCheckbox}<span className="keyboard-shortcut">D</span>isable automuting
-            </span>
-            <span className='tooltip right'>{disableAutomutingText}</span>
+        <span id="disable_automuting" className={"mrxl " + (this.props.privacyMode ? "status-button-disabled" : "status-button")} onClick={this.handleChangeDisableAutomuting}>
+          <span>
+            {disableAutomutingCheckbox}<span className="keyboard-shortcut">D</span>isable automuting
           </span>
+          <span className='tooltip right'>{disableAutomutingText}</span>
         </span>
       </div>
     );

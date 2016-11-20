@@ -25,7 +25,7 @@ module.exports = React.createClass({
 
         <span className="header-buttons-right">
           <span className="header-link mrxl" id="options" onClick={this.handleClickShowOptions}>
-            <span>          
+            <span>
               <span className="keyboard-shortcut">O</span>ptions
             </span>
             <span className='tooltip right'>Configure the default muting behavior, whitelist, blacklist, and music list</span>

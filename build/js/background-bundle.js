@@ -1,4 +1,186 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],2:[function(require,module,exports){
 (function (process){
 // vim:ts=4:sts=4:sw=4:
 /*!
@@ -2050,133 +2232,12 @@ return Q;
 });
 
 }).call(this,require('_process'))
-},{"_process":2}],2:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-(function () {
-  try {
-    cachedSetTimeout = setTimeout;
-  } catch (e) {
-    cachedSetTimeout = function () {
-      throw new Error('setTimeout is not defined');
-    }
-  }
-  try {
-    cachedClearTimeout = clearTimeout;
-  } catch (e) {
-    cachedClearTimeout = function () {
-      throw new Error('clearTimeout is not defined');
-    }
-  }
-} ())
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = cachedSetTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    cachedClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        cachedSetTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(require,module,exports){
+},{"_process":1}],3:[function(require,module,exports){
 "use strict";var Q=require('q');var windowManager=require('./background/window_manager')(chrome);var chromeMisc=require('./background/chrome_misc')(chrome);var musicControllers=require('./background/music_controllers')(chrome);var prefsStore=require('./prefs_store')(chrome);var URL_OPTIONS=chrome.runtime.getURL('build/html/options.html');var URL_WEBSTORE='https://chrome.google.com/webstore/detail/acofndgbcimipbpeoplfjcapdbebbmca';var URL_SUPPORT='http://www.github.com/jaredsohn/mutetab/issues';// UI constants; not used right now (requires ui shown via keyboard shortcuts)
 var PADDING_TOP=50;var PADDING_BOTTOM=50;var EXTENSION_UI_WIDTH=300;// other constants
 var PLAY_PAUSE_WAIT=4;// we wait this long in seconds after asking a tab to play or be paused before we expect to be notified that it did
 var URL_CHANGE_WAIT=10;var DUCKED_TIMEOUT_EXTRA_WAIT=60;// wait this additional length before clearing something that is ducked.  Otherwise it gets unducked too quickly.
-var hideDucking_=false;// globals
+var hideDucking_=false;var injectingEnabled_=false;// globals
 var prefs_={};// User preferences
 var tabState_={};// Current state.
 var updateContextMenusTimeout_=null;var refreshUiTimeout_=null;var isFirstTime_=true;var updateContextMenusBusy_=false;var browserActionTitle_='MuteTab';var browserActionUnduckMessage_='';var browserActionMode_='';var checkMaybeAudibleCount_=0;var privacyModeToggleInProgress_=false;var prevDuckingTabState_=null;// Turn on/off logging; can be set via console
@@ -2283,7 +2344,7 @@ updateMuted(tab.id,true,{saveNonPrivate:false},'Muted due to privacy mode.').don
 // A tradeoff of this it generates the full context menu from scratch every time.  A reason why
 // we don't just use 'update' is there doesn't seem to be a clean way to hide the 'unducked' section
 // when ducking isn't enabled instead of greying it out.
-var updateContextMenus=function updateContextMenus(){clearTimeout(updateContextMenusTimeout_);updateContextMenusTimeout_=setTimeout(function(){updateContextMenusTimeout_=null;return windowManager.getCurrentTab().then(function(currentTabInfo){// console.log("updateContextMenus", currentTabInfo.id, currentTabInfo.url, unduckedTabId_);
+var updateContextMenus=function updateContextMenus(){clearTimeout(updateContextMenusTimeout_);updateContextMenusTimeout_=setTimeout(function(){updateContextMenusTimeout_=null;return windowManager.getCurrentTab().then(function(currentTabInfo){if(currentTabInfo===null){console.error("currentTabInfo is null");return Q.when(null);}// console.log("updateContextMenus", currentTabInfo.id, currentTabInfo.url, unduckedTabId_);
 if(updateContextMenusBusy_){console.log(currentTabInfo.id,'context menus busy');return Q.when(null);}updateContextMenusBusy_=true;return chromeMisc.contextMenusRemoveAll().then(function(){try{var domain=getDomain(currentTabInfo.url);var listType=prefs_.muteAllTabs||currentTabInfo.incognito&&prefs_.muteNewIncognito?'white':'black';var inList=prefsStore.domainInList(domain,prefs_[listType+'list']);var blackOrWhiteListDomain=prefsStore.getDomainRuleForDomainInList(domain,prefs_[listType+'list']);var inMusicList=prefsStore.domainInList(domain,prefs_.musiclist);var inManualDuckingList=prefsStore.domainInList(domain,prefs_.manualduckinglist);var unduckedTabContextId=void 0;if(blackOrWhiteListDomain===null)blackOrWhiteListDomain=domain;var currentTabContextId=chrome.contextMenus.create({'title':'Current tab','contexts':['page']});var backgroundTabsContextId=chrome.contextMenus.create({'title':'Background tabs','contexts':['page']});var allTabsContextId=chrome.contextMenus.create({'title':'All tabs','contexts':['page']});if(!hideDucking_){if(duckingEffectivelyEnabled()&&unduckedTabId_>0){unduckedTabContextId=chrome.contextMenus.create({'id':'unducked_tab','title':'Unducked tab','contexts':['page']});}}chrome.contextMenus.create({'type':'separator','contexts':['page']});chrome.contextMenus.create({'id':'change_privacy_mode','type':'checkbox','checked':prefs_.privacyMode,'title':'Privacy Mode','contexts':['page'],'enabled':!prefs_.disableAutomuting});chrome.contextMenus.create({'id':'change_disable_automuting','type':'checkbox','checked':prefs_.disableAutomuting,'title':'Disable automuting','contexts':['page'],'enabled':!prefs_.privacyMode});chrome.contextMenus.create({'type':'separator','contexts':['page']});chrome.contextMenus.create({'id':'show_options','title':'Options','contexts':['page']});if(getState(currentTabInfo.id,'mutedCached')){chrome.contextMenus.create({'id':'unmute_current','title':'Unmute','contexts':['page'],'parentId':currentTabContextId});}else{chrome.contextMenus.create({'id':'mute_current','title':'Mute','contexts':['page'],'parentId':currentTabContextId});}var isPlaying=getMusicState(currentTabInfo.id,'isPlaying');if(isPlaying!==''){chrome.contextMenus.create({'id':isPlaying?'pause_current':'play_current','title':isPlaying?'Pause':'Play','contexts':['page'],'parentId':currentTabContextId});}var blackWhiteListCommand=listType==='black'?inList?'blacklist_remove':'blacklist_add':inList?'whitelist_remove':'whitelist_add';chrome.contextMenus.create({'id':blackWhiteListCommand,'title':(inList?'Remove ':'Add ')+blackOrWhiteListDomain+(inList?' from ':' to ')+listType+'list','contexts':['page'],'parentId':currentTabContextId});chrome.contextMenus.create({'id':inMusicList?'musiclist_remove':'musiclist_add','title':(inMusicList?'Remove ':'Add ')+getDomain(currentTabInfo.url)+(inMusicList?' from ':' to ')+'music list','contexts':['page'],'parentId':currentTabContextId});if(!hideDucking_){chrome.contextMenus.create({'id':inManualDuckingList?'manualduckinglist_remove':'manualduckinglist_add','title':(inManualDuckingList?'Remove ':'Add ')+getDomain(currentTabInfo.url)+(inManualDuckingList?' from ':' to ')+'manual ducking controls list','contexts':['page'],'parentId':currentTabContextId});}chrome.contextMenus.create({'id':'mute_all','title':'Mute','contexts':['page'],'parentId':allTabsContextId});chrome.contextMenus.create({'id':'unmute_all','title':'Unmute','contexts':['page'],'parentId':allTabsContextId});chrome.contextMenus.create({'id':'mute_background','title':'Mute','contexts':['page'],'parentId':backgroundTabsContextId});if(duckingEffectivelyEnabled()&&unduckedTabId_>0){chrome.contextMenus.create({'id':'show_unducked','title':'Show','contexts':['page'],'parentId':unduckedTabContextId});chrome.contextMenus.create({'id':'pause_unducked','title':'Pause','contexts':['page'],'parentId':unduckedTabContextId,'enabled':getMusicState(unduckedTabId_,'isPlaying')===true});chrome.contextMenus.create({'id':'mute_unducked','title':'Mute','contexts':['page'],'parentId':unduckedTabContextId,'enabled':!getState(unduckedTabId_,'mutedCached')});chrome.contextMenus.create({'id':'close_unducked','title':'Close','contexts':['page'],'parentId':unduckedTabContextId});}}catch(ex){console.error(ex);}updateContextMenusBusy_=false;return Q.when(null);});});},50);// delay before actually updating context menus so that we don't do it a bunch of times in a row
 };var showTabsWindow=function showTabsWindow(){return Q.all([windowManager.getLastFocusedWindow(),windowManager.getExtensionWindowId()]).spread(function(currentWindow,extensionWindowId){// Don't activate the extension UI from an existing extension window.
 if(currentWindow.id==extensionWindowId)return null;// When the user opens the UI in a separate window (not the popup) and
@@ -2308,7 +2369,7 @@ str='\nAutomuting behavior: '+str+'.';}var inManualDuckingList=false;if(unducked
 ////////////////////////////////////////////////////////////////////////
 var clearPlayAndPauseInProgressIfExpired=function clearPlayAndPauseInProgressIfExpired(tabId){var playInProgressTimestamp=getState(tabId,'playInProgress');if(playInProgressTimestamp!==new Date(0)&&new Date().getTime()-playInProgressTimestamp.getTime()>PLAY_PAUSE_WAIT*1000){// console.log(tabId, "clearing playinprogress");
 setState(tabId,'playInProgress',new Date(0));setState(tabId,'playInProgressExpired',true);}var pauseInProgressTimestamp=getState(tabId,'pauseInProgress');if(pauseInProgressTimestamp!==new Date(0)&&new Date().getTime()-pauseInProgressTimestamp.getTime()>PLAY_PAUSE_WAIT*1000){// console.log(tabId, "clearing pauseinprogress");
-setState(tabId,'pauseInProgress',new Date(0));setState(tabId,'pauseInProgressExpired',true);}};var playMusic=function playMusic(tabId,reason){if(prefs_.disablePlayPause)return Q.when(null);return Q.fcall(function(){if(isPlayingOrPlayInProgress(tabId))return Q.when(null);if(logTypeEnabled_.music)console.log(tabId,'playMusic',reason,getMusicState(tabId,'isPlaying'));setState(tabId,'playInProgress',new Date());setState(tabId,'pauseInProgress',new Date(0));setState(tabId,'playInProgressReason',reason);setState(tabId,'playInProgressExpired',false);addMaybeAudibleCheck(tabId,PLAY_PAUSE_WAIT,false);chromeMisc.tabsSendMessage(parseInt(tabId,10),{'action':'playPause','customOnly':getState(tabId,'hasCustomMusicController'),'intendedCommand':'play'},{});return null;});};var pauseMusic=function pauseMusic(tabId,reason){if(prefs_.disablePlayPause)return Q.when(null);return Q.fcall(function(){if(!isPausedOrPauseInProgress(tabId)){if(logTypeEnabled_.music)console.log(tabId,'pauseMusic',reason);setState(tabId,'pauseInProgress',new Date());setState(tabId,'playInProgress',new Date(0));setState(tabId,'pauseInProgressReason',reason);setState(tabId,'pauseInProgressExpired',false);addMaybeAudibleCheck(tabId,PLAY_PAUSE_WAIT,false);chromeMisc.tabsSendMessage(parseInt(tabId,10),{'action':'playPause','customOnly':getState(tabId,'hasCustomMusicController'),'intendedCommand':'pause'},{});}return Q.when(null);});};var pauseCurrent=function pauseCurrent(){return windowManager.getCurrentTab().then(function(tabInfo){return pauseMusic(tabInfo.id,'Paused by user via MuteTab context menu.');});};var playCurrent=function playCurrent(){return windowManager.getCurrentTab().then(function(tabInfo){return updateMuted(tabInfo.id,false,{},'Unmuted by user when playing via MuteTab context menu.').then(playMusic(tabInfo.id,'Played by user via MuteTab context menu.'));});};var muteOrPauseUnducked=function muteOrPauseUnducked(){if(unduckedTabId_!==-1){return getMusicState(unduckedTabId_,'isPlaying')?pauseMusic(unduckedTabId_,'Paused by user as \'unducked tab\' via keyboard shortcut.'):updateMuted(unduckedTabId_,true,{},'Muted by user as \'unducked tab\' via keyboard shortcut.');}return Q.when(null);};var injectMusicApi=function injectMusicApi(tabId,url,injectDefault){// Note: it is now okay to inject multiple times into the same tab.
+setState(tabId,'pauseInProgress',new Date(0));setState(tabId,'pauseInProgressExpired',true);}};var playMusic=function playMusic(tabId,reason){if(prefs_.disablePlayPause)return Q.when(null);return Q.fcall(function(){if(isPlayingOrPlayInProgress(tabId))return Q.when(null);if(logTypeEnabled_.music)console.log(tabId,'playMusic',reason,getMusicState(tabId,'isPlaying'));setState(tabId,'playInProgress',new Date());setState(tabId,'pauseInProgress',new Date(0));setState(tabId,'playInProgressReason',reason);setState(tabId,'playInProgressExpired',false);addMaybeAudibleCheck(tabId,PLAY_PAUSE_WAIT,false);chromeMisc.tabsSendMessage(parseInt(tabId,10),{'action':'playPause','customOnly':getState(tabId,'hasCustomMusicController'),'intendedCommand':'play'},{});return null;});};var pauseMusic=function pauseMusic(tabId,reason){if(prefs_.disablePlayPause)return Q.when(null);return Q.fcall(function(){if(!isPausedOrPauseInProgress(tabId)){if(logTypeEnabled_.music)console.log(tabId,'pauseMusic',reason);setState(tabId,'pauseInProgress',new Date());setState(tabId,'playInProgress',new Date(0));setState(tabId,'pauseInProgressReason',reason);setState(tabId,'pauseInProgressExpired',false);addMaybeAudibleCheck(tabId,PLAY_PAUSE_WAIT,false);chromeMisc.tabsSendMessage(parseInt(tabId,10),{'action':'playPause','customOnly':getState(tabId,'hasCustomMusicController'),'intendedCommand':'pause'},{});}return Q.when(null);});};var pauseCurrent=function pauseCurrent(){return windowManager.getCurrentTab().then(function(tabInfo){return pauseMusic(tabInfo.id,'Paused by user via MuteTab context menu.');});};var playCurrent=function playCurrent(){return windowManager.getCurrentTab().then(function(tabInfo){return updateMuted(tabInfo.id,false,{},'Unmuted by user when playing via MuteTab context menu.').then(playMusic(tabInfo.id,'Played by user via MuteTab context menu.'));});};var muteOrPauseUnducked=function muteOrPauseUnducked(){if(unduckedTabId_!==-1){return getMusicState(unduckedTabId_,'isPlaying')?pauseMusic(unduckedTabId_,'Paused by user as \'unducked tab\' via keyboard shortcut.'):updateMuted(unduckedTabId_,true,{},'Muted by user as \'unducked tab\' via keyboard shortcut.');}return Q.when(null);};var injectMusicApi=function injectMusicApi(tabId,url,injectDefault){if(!injectingEnabled_){return Q.when(null);}// Note: it is now okay to inject multiple times into the same tab.
 // We do this rarely and the script makes sure it doesn't run more
 // than once (used to check here if it already injected and bail if so)
 if(url.startsWith('chrome://'))return Q.when(false);if(url.startsWith('chrome-devtools://'))return Q.when(false);if(url.startsWith('chrome-extension://'))return Q.when(false);if(url.startsWith('https://chrome.google.com/webstore'))return Q.when(false);if(url.startsWith('data:'))return Q.when(false);if(logTypeEnabled_.injected)console.log(tabId,'injectMusicApi',url,injectDefault);return Q.when(null).then(function(){var promises=[Q.when(null)];var disableDefaultController=false;var allFrames=false;var controllerFileName=musicControllers.getController(url);if(controllerFileName!==null)setState(tabId,'hasCustomMusicController',true);if(controllerFileName!==null){//disableDefaultController = (controllerFileName === "YoutubeController.js");
@@ -2484,7 +2545,7 @@ setPropertiesPromises.push(playMusic(tabId,'Played as a part of test setup.'));}
 if(localStorage.enableLogging==='true'||false){loggingEnabled_=true;console.log('Log types enabled:',logTypeEnabled_);}else{console.disableLogging();}windowManager.init().then(loadSettings()).then(function(){chrome.tabs.onCreated.addListener(onCreated);chrome.tabs.onActivated.addListener(onActivated);chrome.tabs.onReplaced.addListener(onReplaced);chrome.tabs.onUpdated.addListener(onUpdated);chrome.tabs.onRemoved.addListener(onRemoved);chrome.runtime.onMessage.addListener(onMessage);chrome.commands.onCommand.addListener(onCommand);chrome.contextMenus.onClicked.addListener(onContextMenuClicked);// chrome.tabCapture.onStatusChanged.addListener(onCaptured); // This doesn't work for tabs captured by other extensions
 }).catch(function(err){console.error(err);}).done();
 
-},{"./background/chrome_misc":4,"./background/music_controllers":5,"./background/window_manager":6,"./prefs_store":7,"q":1}],4:[function(require,module,exports){
+},{"./background/chrome_misc":4,"./background/music_controllers":5,"./background/window_manager":6,"./prefs_store":7,"q":2}],4:[function(require,module,exports){
 "use strict";
 
 var util = require("../util");
@@ -2917,7 +2978,7 @@ module.exports = function (chrome) {
   };
 };
 
-},{"../util":8,"./chrome_misc":4,"q":1}],7:[function(require,module,exports){
+},{"../util":8,"./chrome_misc":4,"q":2}],7:[function(require,module,exports){
 "use strict";
 
 var Q = require("q");
@@ -3069,7 +3130,7 @@ module.exports = function (chrome) {
   };
 };
 
-},{"./util":8,"q":1}],8:[function(require,module,exports){
+},{"./util":8,"q":2}],8:[function(require,module,exports){
 "use strict";
 
 var Q = require("q");
@@ -3082,6 +3143,10 @@ module.exports = {
     var deferred = Q.defer();
     var callback = function callback() {
       deferred.resolve(Array.prototype.slice.call(arguments)[0]);
+      var lastError = chrome.runtime.lastError;
+      if (lastError && lastError.message) {
+        console.log("pcall message: " + lastError.message);
+      }
     };
     var newArgs = Array.prototype.slice.call(arguments, 1);
     newArgs.push(callback);
@@ -3090,4 +3155,4 @@ module.exports = {
   }
 };
 
-},{"q":1}]},{},[3]);
+},{"q":2}]},{},[3]);
