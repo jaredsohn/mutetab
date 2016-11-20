@@ -8,6 +8,10 @@ module.exports = {
     let deferred = Q.defer();
     let callback = function() {
       deferred.resolve(Array.prototype.slice.call(arguments)[0]);
+      let message = chrome.runtime.lastError.message;
+      if (message != "") {
+        console.log("pcall message: " + message);
+      }
     };
     let newArgs = Array.prototype.slice.call(arguments, 1);
     newArgs.push(callback);
