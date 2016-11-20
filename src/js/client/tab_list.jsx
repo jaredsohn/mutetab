@@ -40,10 +40,7 @@ module.exports = React.createClass({
         pauseMusic={this.props.pauseMusic}
         toggleBlackOrWhiteList={this.props.toggleBlackOrWhiteList}
         duckingEffectivelyEnabled={this.props.duckingEffectivelyEnabled}
-        loggingEnabled={this.props.loggingEnabled}
-        containerHeight={this.getHeight()}
-        containerScrollTop={this.getScrollTop()}
-        setContainerScrollTop={this.setScrollTop}/>
+        loggingEnabled={this.props.loggingEnabled}/>
     );
     return elem;
   },

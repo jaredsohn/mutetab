@@ -8,8 +8,6 @@ module.exports = React.createClass({
     tab: React.PropTypes.object.isRequired,
     filter: React.PropTypes.string.isRequired,
     selected: React.PropTypes.bool.isRequired,
-    containerScrollTop: React.PropTypes.number.isRequired,
-    containerHeight: React.PropTypes.number.isRequired,
     duckingEffectivelyEnabled: React.PropTypes.bool.isRequired,
     loggingEnabled: React.PropTypes.bool.isRequired,
     changeSelected: React.PropTypes.func.isRequired,
@@ -17,7 +15,6 @@ module.exports = React.createClass({
     toggleMuteSelected: React.PropTypes.func.isRequired,
     playMusic: React.PropTypes.func.isRequired,
     pauseMusic: React.PropTypes.func.isRequired,
-    setContainerScrollTop: React.PropTypes.func.isRequired,
     toggleBlackOrWhiteList: React.PropTypes.func.isRequired
   },
 
@@ -254,25 +251,6 @@ module.exports = React.createClass({
     } catch (ex) {
       console.error(ex);
       return null;
-    }
-  },
-
-/*  componentDidUpdate: function() {
-    if (this.props.selected) {
-      this.ensureVisible();
-    }
-  },*/
-
-  ensureVisible: function() {
-    let node = ReactDom.findDOMNode(this);
-    let myTop = node.offsetTop;
-    let myBottom = myTop + node.offsetHeight;
-    let containerScrollTop = this.props.containerScrollTop;
-    let containerScrollBottom = containerScrollTop + this.props.containerHeight;
-
-    if (myTop < containerScrollTop) this.props.setContainerScrollTop(myTop);
-    if (myBottom > containerScrollBottom) {
-      this.props.setContainerScrollTop(containerScrollTop + myBottom - containerScrollBottom);
     }
   },
 
