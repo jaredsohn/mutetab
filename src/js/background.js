@@ -2501,6 +2501,17 @@ let getDomain = function(url) {
 // Load Settings
 ////////////////////////////////////////////////////////////////////////
 
+let updateMutingOnLoad = function() {
+  console.log("updatemutingonload");
+  if (prefs_.muteAllTabs) {
+    return muteAll(true);
+  } else if (prefs_.muteBackgroundTabs) {
+    return muteBackground();
+  }
+
+  return Q.when(null);
+}
+
 let loadSettings = function() {
   return prefsStore.load()
   .then(function(prefs) {
@@ -2544,6 +2555,7 @@ let afterLoadSettings = function() {
 };
 
 // If loading for the first time, we do the following:
+// -- do a mute all or mute background tabs if that is what the muting behavior is set to
 // -- if privacy mode, we store away our current mute state and then mute everything (including music sites)
 // -- ensure that mutedCached, audibleCached, lastAudibleStart, and lastAudibleEnd are initialized
 let afterLoadSettingsFirstTime = function(tabs) {
@@ -2551,6 +2563,9 @@ let afterLoadSettingsFirstTime = function(tabs) {
     return Q.when(null);
 
   return Q.when(null)
+  .then(function() {
+    return updateMutingOnLoad();
+  })
   .then(function() {
     isFirstTime_ = false;
     console.log('tabs on load', tabs);
