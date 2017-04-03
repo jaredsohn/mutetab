@@ -2510,7 +2510,7 @@ let updateMutingOnLoad = function() {
   }
 
   return Q.when(null);
-}
+};
 
 let loadSettings = function() {
   return prefsStore.load()
