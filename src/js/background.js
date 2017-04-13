@@ -854,6 +854,9 @@ let updateStateForUrlChange = function(tab) {
 
     if (domain !== null) {
       let wasMuted = getState(tab.id, 'mutedCached');
+      console.log(tab.id, "wasMuted", wasMuted);
+      console.log(tab.id, "domain", domain);
+      console.log(tab.id, "oldDomain", oldDomain);
       //console.log("~~~", prefs_.mutedRememberSameDomain, (domain === oldDomain), (!prefs_.disableAutomuting), domain, oldDomain);
       if (prefs_.mutedRememberSameDomain && (domain === oldDomain) && (!prefs_.disableAutomuting)) {
         muteInfo = {should: wasMuted, reason: 'Remember muted for same domain.'};
@@ -906,7 +909,7 @@ let updateStateForUrlChange = function(tab) {
       setState(tab.id, 'urlChanged', new Date());
       setState(tab.id, 'domainCached', domain);
       setState(tab.id, 'audibleCached', oldAudible);
-      setState(tab.id, 'mutedCached', oldMuted);
+      setState(tab.id, 'mutedCached', muteInfo.should);
       setState(tab.id, 'ducked', oldDucked);
       setState(tab.id, 'lastAudibleStart', oldAudibleStart); // needed because we don't have an audible event happen to set it if it starts out audible from previous url
 
