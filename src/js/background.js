@@ -233,6 +233,14 @@ let unmuteAll = function() {
   });
 };
 
+let makeCurrentTabOnlyUnmuted = function() {
+  muteBackground();
+  Q.when(windowManager.getCurrentTab())
+  .then(function(currentTab) {
+    chromeMisc.setMuted(currentTab.id, false);
+  });
+};
+
 let muteBackground = function() {
   return Q.all([windowManager.getTabs(), windowManager.getCurrentTab()])
   .spread(function(tabs, currentTabInfo) {
@@ -476,6 +484,7 @@ let onCommandAsPromise = function(command) {
 
   let promise = Q.when(null); // our default promise, used when calling sync code
   switch (command) {
+    case 'make_current_tab_only_unmuted': return makeCurrentTabOnlyUnmuted();
     case 'show_tabs_window': return showTabsWindow();
     case 'mute_all': return muteAll(false);
     case 'unmute_all': return unmuteAll();
@@ -847,7 +856,6 @@ let updateStateForUrlChange = function(tab) {
     let oldDomain = getState(tab.id, 'domainCached');
     let oldDucked = getState(tab.id, 'ducked');
     let oldAudible = getState(tab.id, 'audibleCached');
-    let oldMuted = getState(tab.id, 'mutedCached');
     let oldAudibleStart = getState(tab.id, 'lastAudibleStart');
 
     // console.log("domain: ", domain, getState(tab.id, "domainCached"));

@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "MuteTab",
   "description": "Take control of noisy tabs: mute by default, blacklists, and more",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "icons": {
     "16": "build/img/favicon.png",
     "48": "build/img/favicon.png",
@@ -17,6 +17,9 @@
       "default_popup": "build/html/popup.html"
   },
   "commands": {
+    "make_current_tab_only_unmuted": {
+      "description": "Unmute current tab and mute others"
+    },
     "toggle_current_muted": {
       "description": "Toggle muted for current tab",
       "suggested_key": {
