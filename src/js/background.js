@@ -236,17 +236,23 @@ let unmuteAll = function() {
 let makeCurrentTabOnlyUnmuted = function() {
   muteBackground();
   Q.when(windowManager.getCurrentTab())
-  .then(function(currentTab) {
-    chromeMisc.setMuted(currentTab.id, false);
+  .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
+    return chromeMisc.setMuted(currentTabInfo.id, false);
   });
 };
 
 let muteBackground = function() {
   return Q.all([windowManager.getTabs(), windowManager.getCurrentTab()])
   .spread(function(tabs, currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
     let filtered = tabs.filter(function(tabInfo) {
       let domain = getDomain(tabInfo.url);
-      return ((tabInfo.id !== currentTabInfo.id) && (!prefsStore.domainInList(domain, prefs_.musiclist)));
+      return (currentTabInfo && (tabInfo.id !== currentTabInfo.id) && (!prefsStore.domainInList(domain, prefs_.musiclist)));
     });
     let mutePromises = filtered.map(function(tabInfo) { return updateMuted(tabInfo.id, true, {}, 'Muted by \'Mute background tabs\'.'); });
     let pausePromises = filtered.map(function(tabInfo) {
@@ -261,6 +267,9 @@ let muteBackground = function() {
 let toggleCurrentMuted = function() {
   return windowManager.getCurrentTab()
   .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
     return updateMuted(currentTabInfo.id, !currentTabInfo.mutedInfo.muted, {}, (!currentTabInfo.mutedInfo.muted ? 'Unmuted' : 'Muted') + ' via keyboard shortcut');
   });
 };
@@ -268,6 +277,9 @@ let toggleCurrentMuted = function() {
 let setCurrentMuted = function(mute) {
   return windowManager.getCurrentTab()
   .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
     let reason = mute ? 'Muted by user via MuteTab context menu.' : 'Unmuted by user via MuteTab context menu';
     return updateMuted(currentTabInfo.id, mute, {}, reason);
   });
@@ -405,6 +417,10 @@ let onUpdated = function(tabId, changeInfo, tab) {
 let onActivated = function(activeInfo) {
   windowManager.getCurrentTab()
   .then(function(currentTab) {
+    if (!currentTabInfo) {
+      return;
+    }
+
     console.log("onActivated", activeInfo, currentTab);
     if ((currentTab === null) || (currentTab.windowId !== activeInfo.windowId)) {
       console.log("onActivated - ignoring since not in active window", activeInfo, activeInfo.windowId, windowManager.getExtensionWindowIdSync());
@@ -606,6 +622,9 @@ let updateMuted = function(tabId, shouldMute, options, reason) {
   tabId = parseInt(tabId, 10); // ensure it is integer
   return windowManager.getCurrentTab()
   .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
     options = options || {};
     let skipPlay = options.skipPlay || false;
 
@@ -717,6 +736,9 @@ let updateAudible = function(tabId, audible, reason) {
 let updateListForCurrentTab = function(listType) {
   return windowManager.getCurrentTab()
   .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
     let domainToUpdate = getDomain(currentTabInfo.url);
     if ((listType == 'white') || (listType == 'black')) {
       let blackOrWhiteListDomain = prefsStore.getDomainRuleForDomainInList(domainToUpdate, prefs_[listType + 'list']);
@@ -957,8 +979,7 @@ let updateContextMenus = function() {
 
     return windowManager.getCurrentTab()
     .then(function(currentTabInfo) {
-      if (currentTabInfo === null) {
-        console.error("currentTabInfo is null");
+      if (!currentTabInfo) {
         return Q.when(null);
       }
       // console.log("updateContextMenus", currentTabInfo.id, currentTabInfo.url, unduckedTabId_);
@@ -1480,16 +1501,22 @@ let pauseMusic = function(tabId, reason) {
 
 let pauseCurrent = function() {
   return windowManager.getCurrentTab()
-  .then(function(tabInfo) {
-    return pauseMusic(tabInfo.id, 'Paused by user via MuteTab context menu.');
+  .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
+    return pauseMusic(currentTabInfo.id, 'Paused by user via MuteTab context menu.');
   });
 };
 
 let playCurrent = function() {
   return windowManager.getCurrentTab()
-  .then(function(tabInfo) {
-    return updateMuted(tabInfo.id, false, {}, 'Unmuted by user when playing via MuteTab context menu.')
-    .then(playMusic(tabInfo.id, 'Played by user via MuteTab context menu.'));
+  .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
+    return updateMuted(currentTabInfo.id, false, {}, 'Unmuted by user when playing via MuteTab context menu.')
+    .then(playMusic(currentTabInfo.id, 'Played by user via MuteTab context menu.'));
   });
 };
 
@@ -1623,7 +1650,10 @@ let updateMusicStateData = function(tabId, musicStateData) {
     return Q.when(null);
 
   return windowManager.getCurrentTab()
-  .then(function(tabInfo) {
+  .then(function(currentTabInfo) {
+    if (!currentTabInfo) {
+      return Q.when(null);
+    }
     if (musicStateData.hasOwnProperty('frameId')) {
       let musicStateForFrames = getState(tabId, 'musicStateForFrame');
 
@@ -1692,7 +1722,7 @@ let updateMusicStateData = function(tabId, musicStateData) {
         console.log(tabId, 'updateMusicStateData done', new Date(), musicStateData);
     }
 
-    if ((tabInfo.id === tabId) || (tabId === unduckedTabId_))
+    if ((currentTabInfo.id === tabId) || (tabId === unduckedTabId_))
       updateContextMenus();
 
     return Q.when(null);

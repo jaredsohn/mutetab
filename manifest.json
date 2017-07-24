@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "MuteTab",
   "description": "Take control of noisy tabs: mute by default, blacklists, and more",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "icons": {
     "16": "build/img/favicon.png",
     "48": "build/img/favicon.png",

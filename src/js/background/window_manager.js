@@ -38,6 +38,10 @@ module.exports = function(chrome) {
           }
           chromeMisc.ensureMutedInfo(activeTabForActiveWindow);
           //console.log("activetabforactivewindow", activeTabForActiveWindow);
+
+          if (activeTabForActiveWindow === null) {
+            console.log('currentTabInfo is null because match not found for window', lastFocusedWindow.id)
+          }
           return Q.when(activeTabForActiveWindow);
         });
       }).catch(function(error) {
@@ -215,8 +219,10 @@ module.exports = function(chrome) {
       var self = this;
       return this.getCurrentTab()
       .then(function(tabInfo) {
-        self.setLastTabId(tabInfo.id);
-        self.setLastWindowId(tabInfo.windowId);
+        if (tabInfo) {
+          self.setLastTabId(tabInfo.id);
+          self.setLastWindowId(tabInfo.windowId);
+        }
 
         return Q.when(null);
       });
