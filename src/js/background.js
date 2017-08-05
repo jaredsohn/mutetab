@@ -416,13 +416,13 @@ let onUpdated = function(tabId, changeInfo, tab) {
 
 let onActivated = function(activeInfo) {
   windowManager.getCurrentTab()
-  .then(function(currentTab) {
+  .then(function(currentTabInfo) {
     if (!currentTabInfo) {
       return;
     }
 
-    console.log("onActivated", activeInfo, currentTab);
-    if ((currentTab === null) || (currentTab.windowId !== activeInfo.windowId)) {
+    console.log("onActivated", activeInfo, currentTabInfo);
+    if ((currentTabInfo === null) || (currentTabInfo.windowId !== activeInfo.windowId)) {
       console.log("onActivated - ignoring since not in active window", activeInfo, activeInfo.windowId, windowManager.getExtensionWindowIdSync());
       return;
     }
