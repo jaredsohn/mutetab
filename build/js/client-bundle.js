@@ -23197,7 +23197,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function componentDidMount() {
-    window.onblur = this.close;
+    //    window.onblur = this.close; // This had made it hard to see the console for the popup
     this.refreshTabs();
   },
 
