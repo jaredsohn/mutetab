@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -169,6 +169,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -181,12 +185,12 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
-(function (process){
+(function (process,setImmediate){
 // vim:ts=4:sts=4:sw=4:
 /*!
  *
- * Copyright 2009-2012 Kris Kowal under the terms of the MIT
- * license found at http://github.com/kriskowal/q/raw/master/LICENSE
+ * Copyright 2009-2017 Kris Kowal under the terms of the MIT
+ * license found at https://github.com/kriskowal/q/blob/v1/LICENSE
  *
  * With parts by Tyler Close
  * Copyright 2007-2009 Tyler Close under the terms of the MIT X license found
@@ -374,7 +378,7 @@ var nextTick =(function () {
         //   `setTimeout`. In this case `setImmediate` is preferred because
         //    it is faster. Browserify's `process.toString()` yields
         //   "[object Object]", while in a real Node environment
-        //   `process.nextTick()` yields "[object process]".
+        //   `process.toString()` yields "[object process]".
         isNodeJS = true;
 
         requestTick = function () {
@@ -511,6 +515,11 @@ var object_create = Object.create || function (prototype) {
     return new Type();
 };
 
+var object_defineProperty = Object.defineProperty || function (obj, prop, descriptor) {
+    obj[prop] = descriptor.value;
+    return obj;
+};
+
 var object_hasOwnProperty = uncurryThis(Object.prototype.hasOwnProperty);
 
 var object_keys = Object.keys || function (object) {
@@ -561,19 +570,20 @@ function makeStackTraceLong(error, promise) {
         promise.stack &&
         typeof error === "object" &&
         error !== null &&
-        error.stack &&
-        error.stack.indexOf(STACK_JUMP_SEPARATOR) === -1
+        error.stack
     ) {
         var stacks = [];
         for (var p = promise; !!p; p = p.source) {
-            if (p.stack) {
+            if (p.stack && (!error.__minimumStackCounter__ || error.__minimumStackCounter__ > p.stackCounter)) {
+                object_defineProperty(error, "__minimumStackCounter__", {value: p.stackCounter, configurable: true});
                 stacks.unshift(p.stack);
             }
         }
         stacks.unshift(error.stack);
 
         var concatedStacks = stacks.join("\n" + STACK_JUMP_SEPARATOR + "\n");
-        error.stack = filterStackString(concatedStacks);
+        var stack = filterStackString(concatedStacks);
+        object_defineProperty(error, "stack", {value: stack, configurable: true});
     }
 }
 
@@ -700,6 +710,14 @@ Q.nextTick = nextTick;
  */
 Q.longStackSupport = false;
 
+/**
+ * The counter is used to determine the stopping point for building
+ * long stack traces. In makeStackTraceLong we walk backwards through
+ * the linked list of promises, only stacks which were created before
+ * the rejection are concatenated.
+ */
+var longStackCounter = 1;
+
 // enable long stacks if Q_DEBUG is set
 if (typeof process === "object" && process && process.env && process.env.Q_DEBUG) {
     Q.longStackSupport = true;
@@ -772,6 +790,7 @@ function defer() {
             // At the same time, cut off the first line; it's always just
             // "[object Promise]\n", as per the `toString`.
             promise.stack = e.stack.substring(e.stack.indexOf("\n") + 1);
+            promise.stackCounter = longStackCounter++;
         }
     }
 
@@ -781,7 +800,12 @@ function defer() {
 
     function become(newPromise) {
         resolvedPromise = newPromise;
-        promise.source = newPromise;
+
+        if (Q.longStackSupport && hasStacks) {
+            // Only hold a reference to the new promise if long stacks
+            // are enabled to reduce memory usage
+            promise.source = newPromise;
+        }
 
         array_reduce(messages, function (undefined, message) {
             Q.nextTick(function () {
@@ -909,7 +933,7 @@ Promise.prototype.join = function (that) {
             // TODO: "===" should be Object.is or equiv
             return x;
         } else {
-            throw new Error("Can't join: not the same: " + x + " " + y);
+            throw new Error("Q can't join: not the same: " + x + " " + y);
         }
     });
 };
@@ -1806,13 +1830,15 @@ function any(promises) {
         function onFulfilled(result) {
             deferred.resolve(result);
         }
-        function onRejected() {
+        function onRejected(err) {
             pendingCount--;
             if (pendingCount === 0) {
-                deferred.reject(new Error(
-                    "Can't get fulfillment value from any promise, all " +
-                    "promises were rejected."
-                ));
+                var rejection = err || new Error("" + err);
+
+                rejection.message = ("Q can't get fulfillment value from any promise, all " +
+                    "promises were rejected. Last error message: " + rejection.message);
+
+                deferred.reject(rejection);
             }
         }
         function onProgress(progress) {
@@ -1936,6 +1962,9 @@ Q["finally"] = function (object, callback) {
 
 Promise.prototype.fin = // XXX legacy
 Promise.prototype["finally"] = function (callback) {
+    if (!callback || typeof callback.apply !== "function") {
+        throw new Error("Q can't apply finally callback");
+    }
     callback = Q(callback);
     return this.then(function (value) {
         return callback.fcall().then(function () {
@@ -2099,6 +2128,9 @@ Promise.prototype.nfcall = function (/*...args*/) {
  */
 Q.nfbind =
 Q.denodeify = function (callback /*...args*/) {
+    if (callback === undefined) {
+        throw new Error("Q can't wrap an undefined function");
+    }
     var baseArgs = array_slice(arguments, 1);
     return function () {
         var nodeArgs = baseArgs.concat(array_slice(arguments));
@@ -2231,8 +2263,87 @@ return Q;
 
 });
 
-}).call(this,require('_process'))
-},{"_process":1}],3:[function(require,module,exports){
+}).call(this,require('_process'),require("timers").setImmediate)
+},{"_process":1,"timers":3}],3:[function(require,module,exports){
+(function (setImmediate,clearImmediate){
+var nextTick = require('process/browser.js').nextTick;
+var apply = Function.prototype.apply;
+var slice = Array.prototype.slice;
+var immediateIds = {};
+var nextImmediateId = 0;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) { timeout.close(); };
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// That's not how node.js implements it but the exposed api is the same.
+exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
+  var id = nextImmediateId++;
+  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
+
+  immediateIds[id] = true;
+
+  nextTick(function onNextTick() {
+    if (immediateIds[id]) {
+      // fn.call() is faster so we optimize for the common use-case
+      // @see http://jsperf.com/call-apply-segu
+      if (args) {
+        fn.apply(null, args);
+      } else {
+        fn.call(null);
+      }
+      // Prevent ids from leaking
+      exports.clearImmediate(id);
+    }
+  });
+
+  return id;
+};
+
+exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
+  delete immediateIds[id];
+};
+}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
+},{"process/browser.js":1,"timers":3}],4:[function(require,module,exports){
 "use strict";
 
 var util = require("./util");
@@ -2630,7 +2741,7 @@ var mutetabPrefs_ = function mutetabPrefs_() {
 };
 mutetabPrefs_.call(mutetabPrefs);
 
-},{"./prefs_store":4,"./util":5}],4:[function(require,module,exports){
+},{"./prefs_store":5,"./util":6}],5:[function(require,module,exports){
 "use strict";
 
 var Q = require("q");
@@ -2782,7 +2893,7 @@ module.exports = function (chrome) {
   };
 };
 
-},{"./util":5,"q":2}],5:[function(require,module,exports){
+},{"./util":6,"q":2}],6:[function(require,module,exports){
 "use strict";
 
 var Q = require("q");
@@ -2807,4 +2918,4 @@ module.exports = {
   }
 };
 
-},{"q":2}]},{},[3]);
+},{"q":2}]},{},[4]);
