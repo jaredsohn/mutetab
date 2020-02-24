@@ -2,14 +2,14 @@
   "manifest_version": 2,
   "name": "MuteTab",
   "description": "Take control of noisy tabs: mute by default, blacklists, and more",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "icons": {
     "16": "build/img/favicon.png",
     "48": "build/img/favicon.png",
     "128": "build/img/favicon.png"
   },
   "permissions": [
-    "tabs", "storage", "contextMenus", "tabCapture"
+    "tabs", "storage", "contextMenus"
   ],
   "browser_action": {
       "default_title": "MuteTab",
